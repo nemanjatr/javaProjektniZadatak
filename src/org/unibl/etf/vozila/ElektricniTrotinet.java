@@ -7,4 +7,6 @@ public class ElektricniTrotinet extends PrevoznoSredstvo {
         super(jedinstveniIdentifikator, cijenaNabavke, proizvodjac, model, trenutniNivoBaterije);
         this.maksimalnaBrzina = maksimalnaBrzina;
     }
+
+
 }

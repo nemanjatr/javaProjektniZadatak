@@ -14,4 +14,24 @@ public class PrevoznoSredstvo {
         this.model = model;
         this.trenutniNivoBaterije = trenutniNivoBaterije;
     }
+
+    public String getProizvodjac() {
+        return proizvodjac;
+    }
+
+    public String getJedinstveniIdentifikator() {
+        return jedinstveniIdentifikator;
+    }
+
+    public double getCijenaNabavke() {
+        return cijenaNabavke;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public int getTrenutniNivoBaterije() {
+        return trenutniNivoBaterije;
+    }
 }
