@@ -93,8 +93,8 @@ public class Main {
             while((s = in.readLine()) != null) {
                 karakteristikeIznajmljivanja.clear();
                 matcher = pattern.matcher(s);
-                while(matcher.find()) {
-                    if(matcher.group(1) != null) {
+                while (matcher.find()) {
+                    if (matcher.group(1) != null) {
                         karakteristikeIznajmljivanja.add(matcher.group(1));
                     } else {
                         karakteristikeIznajmljivanja.add(matcher.group(2));
@@ -112,18 +112,17 @@ public class Main {
                 promocija = karakteristikeIznajmljivanja.get(7);
 
 
-
-                listaIznajmljivanja.add(new Iznajmljivanje(datumVrijeme, imeKorisnika, pocetnaLokacija, krajnjaLokacija,
-                        trajanjeVoznjeSekunde, kvar, promocija));
+                listaIznajmljivanja.add(new Iznajmljivanje(datumVrijeme, imeKorisnika, identifikatorPrevoznogSredstva,
+                        pocetnaLokacija, krajnjaLokacija, trajanjeVoznjeSekunde, kvar, promocija));
 
             }
 
+            for(int i = 0; i < listaIznajmljivanja.size(); i++) {
+                if(true) {
+                    listaIznajmljivanja.get(i).generisiRacun();
+                }
 
-            for(int i = 0; i < listaIznajmljivanja.size(); i++){
-                System.out.print(i + " ");
-                System.out.println(listaIznajmljivanja.get(i));
             }
-
 
         } catch(IOException e){
             e.printStackTrace();

@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="23ea5e2b-c4e9-40d7-9021-01cf72e7bbcb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Racun.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.~lock.prevozna_sredstva.csv#" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/mapa/PoljeNaMapi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/mapa/PoljeNaMapi.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
