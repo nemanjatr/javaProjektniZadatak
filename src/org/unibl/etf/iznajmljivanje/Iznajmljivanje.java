@@ -77,7 +77,7 @@ public class Iznajmljivanje {
     }
 
     public void racunanjeTarifeNaplacivanja(){
-        if(pocetnaLokacija.getUziDioGrada()) {
+        if(pocetnaLokacija.unutarUzegDijelaGrada()) {
             tarifaNaplacivanja = "uzi";
         } else {
             tarifaNaplacivanja = "siri";
