@@ -105,6 +105,7 @@ public class Main {
                 imeKorisnika = karakteristikeIznajmljivanja.get(1);
                 identifikatorPrevoznogSredstva = karakteristikeIznajmljivanja.get(2); // ne salje se u konstruktor Iznajmljivanja
                 // jer u tekstu zadatka nije navedeno da se ovaj podataka tu treba cuvati??
+                // ipak. na kraju, saljem u konstruktor je bi treba u klasi Iznajmljivanje
                 pocetnaLokacija = karakteristikeIznajmljivanja.get(3);
                 krajnjaLokacija = karakteristikeIznajmljivanja.get(4);
                 trajanjeVoznjeSekunde = karakteristikeIznajmljivanja.get(5);
@@ -117,13 +118,12 @@ public class Main {
 
             }
 
+            // ispis radi provjere ispravnosti rada
             for(int i = 0; i < listaIznajmljivanja.size(); i++) {
                 if(true) {
                     listaIznajmljivanja.get(i).generisiRacun();
                 }
-
             }
-
         } catch(IOException e){
             e.printStackTrace();
         }
