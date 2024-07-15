@@ -3,7 +3,6 @@ package org.unibl.etf.mapa;
 public class PoljeNaMapi {
     private int koordinataX;
     private int koordinataY;
-    private boolean uziDioGrada = false;
 
     public PoljeNaMapi(int koordinataX, int koordinataY) {
         this.koordinataX = koordinataX;
@@ -26,14 +25,11 @@ public class PoljeNaMapi {
         this.koordinataY = koordinataY;
     }
 
-    public boolean getUziDioGrada() {
-        return uziDioGrada;
-    }
-
-    public void gdjeSeNalaziPolje() {
+    public boolean unutarUzegDijelaGrada() {
        if((koordinataX >= 5 && koordinataX <= 14) && (koordinataY >= 5 && koordinataY <= 14)) {
-           this.uziDioGrada = true;
+           return true;
        }
+       return false;
     }
 
     @Override
