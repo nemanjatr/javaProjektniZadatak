@@ -36,7 +36,7 @@ public class Iznajmljivanje {
     public Iznajmljivanje(String datumVrijeme, String imeKorisnika, String identifikatorPrevoznogSredstva, String pocetnaLokacija,
                           String krajnjaLokacija, String trajanjeVoznjeSekunde, String desioSeKvar, String imaPromociju){
 
-        this.brojacInstanci++;
+        brojacInstanci++;
         this.redniBrojIznajmljivanja = brojacInstanci;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy H:mm");
