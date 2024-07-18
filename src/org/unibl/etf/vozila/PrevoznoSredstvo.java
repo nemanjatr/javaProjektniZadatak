@@ -34,4 +34,9 @@ public class PrevoznoSredstvo {
     public int getTrenutniNivoBaterije() {
         return trenutniNivoBaterije;
     }
+
+    @Override
+    public String toString() {
+        return jedinstveniIdentifikator;
+    }
 }
