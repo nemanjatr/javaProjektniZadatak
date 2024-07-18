@@ -64,6 +64,12 @@ public class Iznajmljivanje {
         this.racunZaPlacanje = new Racun();
     }
 
+    public LocalDateTime getDatumVrijeme() {
+        return datumVrijeme;
+    }
+
+
+
     public void racunanjeOsnovneCijene() {
         if('A' == identifikatorPrevoznogSredstva.charAt(0)) {
             racunZaPlacanje.setOsnovnaCijena((int)CAR_UNIT_PRICE * trajanjeVoznjeSekunde);
@@ -123,10 +129,10 @@ public class Iznajmljivanje {
 
     @Override
     public String toString(){
-        return "datum i vrijeme " + datumVrijeme + ", " + "ime korisnika " + imeKorisnika + ", " +
-                "pocetna Lokacija " + pocetnaLokacija + ", " + "krajnja lokacija " + krajnjaLokacija + ", " +
-                "trajanje voznje u sek " + trajanjeVoznjeSekunde + ", " + "desio se kvar " + desioSeKvar + ", " +
-                "ima promociju " + imaPromociju;
+        return "datum i vrijeme " + datumVrijeme.toLocalDate() + " " + datumVrijeme.toLocalTime() + ", " +
+                "ime korisnika " + imeKorisnika + ", " + "pocetna Lokacija " + pocetnaLokacija + ", " +
+                "krajnja lokacija " + krajnjaLokacija + ", " + "trajanje voznje u sek " + trajanjeVoznjeSekunde + ", " +
+                "desio se kvar " + desioSeKvar + ", " + "ima promociju " + imaPromociju;
 
     }
 

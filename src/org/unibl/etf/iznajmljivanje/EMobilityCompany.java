@@ -9,10 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -132,6 +129,12 @@ public class EMobilityCompany {
                         pocetnaLokacija, krajnjaLokacija, trajanjeVoznjeSekunde, kvar, promocija));
 
             }
+            iznajmljivanja.sort(new Comparator<Iznajmljivanje>() {
+                @Override
+                public int compare(Iznajmljivanje o1, Iznajmljivanje o2) {
+                    return o1.getDatumVrijeme().compareTo(o2.getDatumVrijeme());
+                }
+            });
 
         } catch(IOException e) {
             System.out.println("Greska pri ucitavanju iznajmljivanja iz fajla!");
