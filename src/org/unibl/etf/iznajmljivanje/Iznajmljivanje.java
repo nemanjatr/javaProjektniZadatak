@@ -1,10 +1,11 @@
 package org.unibl.etf.iznajmljivanje;
 
+import org.unibl.etf.mapa.Mapa;
 import org.unibl.etf.mapa.PoljeNaMapi;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Iznajmljivanje {
+public class Iznajmljivanje extends Thread {
 
     public static final int DISTANCE_NARROW = 5;
     public static final int DISTANCE_WIDE = 10;
@@ -134,6 +135,113 @@ public class Iznajmljivanje {
                 "krajnja lokacija " + krajnjaLokacija + ", " + "trajanje voznje u sek " + trajanjeVoznjeSekunde + ", " +
                 "desio se kvar " + desioSeKvar + ", " + "ima promociju " + imaPromociju;
 
+    }
+
+    public void kretanje() {
+
+        int udaljenostKretanja = Math.abs(krajnjaLokacija.getKoordinataX() - pocetnaLokacija.getKoordinataX()) +
+                Math.abs(krajnjaLokacija.getKoordinataY() - pocetnaLokacija.getKoordinataY());
+        double trajanjeZadrzavanjaNaPoljuSekunde = (double)trajanjeVoznjeSekunde / udaljenostKretanja;
+
+
+        System.out.println("Iznajmljivanje " + redniBrojIznajmljivanja + ", vozilo " + identifikatorPrevoznogSredstva);
+        System.out.println("=> Vozilo " + identifikatorPrevoznogSredstva + " se nalazi na pocetnoj lokaciji " + pocetnaLokacija);
+        PoljeNaMapi trenutnaLokacija = pocetnaLokacija;
+        //pocetnaLokacija.setZauzeto();
+
+        int i = pocetnaLokacija.getKoordinataX();
+        int j = pocetnaLokacija.getKoordinataY();
+        boolean naizmjenicno = true;
+        boolean iDoKraja = false;
+        boolean jdoKraja = false;
+
+        while(trenutnaLokacija.getKoordinataX() < krajnjaLokacija.getKoordinataX()
+                || trenutnaLokacija.getKoordinataY() < krajnjaLokacija.getKoordinataY()) {
+            synchronized (Mapa.mapa) {
+                if(naizmjenicno) {
+                    i++;
+                    if(i == krajnjaLokacija.getKoordinataX()) {
+                        iDoKraja = true;
+                        naizmjenicno = !naizmjenicno;
+                    }
+                } else {
+                    j++;
+                    if(j == krajnjaLokacija.getKoordinataY()) {
+                        jdoKraja = true;
+                        naizmjenicno = !naizmjenicno;
+                    }
+                }
+
+                if(!iDoKraja && !jdoKraja) {
+                    naizmjenicno = !naizmjenicno;
+                }
+
+                trenutnaLokacija = Mapa.mapa[i][j];
+            }
+
+            try {
+                Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 1000));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("  *** Vozilo " + identifikatorPrevoznogSredstva + " se nalazi na lokaciji " + trenutnaLokacija);
+        }
+
+        System.out.println("=> Vozilo " + identifikatorPrevoznogSredstva + " je stiglo na odrediste.");
+    }
+
+    @Override
+    public void run() {
+
+        int udaljenostKretanja = Math.abs(krajnjaLokacija.getKoordinataX() - pocetnaLokacija.getKoordinataX()) +
+                Math.abs(krajnjaLokacija.getKoordinataY() - pocetnaLokacija.getKoordinataY());
+        double trajanjeZadrzavanjaNaPoljuSekunde = (double) trajanjeVoznjeSekunde / udaljenostKretanja;
+
+
+        System.out.println("Iznajmljivanje " + redniBrojIznajmljivanja + ", vozilo " + identifikatorPrevoznogSredstva);
+        System.out.println("=> Vozilo " + identifikatorPrevoznogSredstva + " se nalazi na pocetnoj lokaciji " + pocetnaLokacija);
+        PoljeNaMapi trenutnaLokacija = pocetnaLokacija;
+        //pocetnaLokacija.setZauzeto();
+
+        int i = pocetnaLokacija.getKoordinataX();
+        int j = pocetnaLokacija.getKoordinataY();
+        boolean naizmjenicno = true;
+        boolean iDoKraja = false;
+        boolean jdoKraja = false;
+
+        while (trenutnaLokacija.getKoordinataX() < krajnjaLokacija.getKoordinataX()
+                || trenutnaLokacija.getKoordinataY() < krajnjaLokacija.getKoordinataY()) {
+            synchronized (Mapa.class) {
+                if (naizmjenicno) {
+                    i++;
+                    if (i == krajnjaLokacija.getKoordinataX()) {
+                        iDoKraja = true;
+                        naizmjenicno = !naizmjenicno;
+                    }
+                } else {
+                    j++;
+                    if (j == krajnjaLokacija.getKoordinataY()) {
+                        jdoKraja = true;
+                        naizmjenicno = !naizmjenicno;
+                    }
+                }
+
+                if (!iDoKraja && !jdoKraja) {
+                    naizmjenicno = !naizmjenicno;
+                }
+
+                trenutnaLokacija = Mapa.mapa[i][j];
+            }
+
+            try {
+                Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("  *** Vozilo " + identifikatorPrevoznogSredstva + " se nalazi na lokaciji " + trenutnaLokacija);
+        }
+
+        System.out.println("=> Vozilo " + identifikatorPrevoznogSredstva + " je stiglo na odrediste.");
     }
 
 }
