@@ -1,0 +1,7 @@
+datum i vrijeme 2024-06-01 09:00, ime korisnika K1, ID prevoznog sredstvaT1, pocetna Lokacija (0, 0), krajnja lokacija (7, 8), trajanje voznje u sek 1, desio se kvar false, ima promociju true
+datum i vrijeme 2024-06-01 09:00, ime korisnika K3, ID prevoznog sredstvaB1, pocetna Lokacija (7, 5), krajnja lokacija (9, 14), trajanje voznje u sek 1, desio se kvar false, ima promociju false
+datum i vrijeme 2024-06-02 09:00, ime korisnika K2, ID prevoznog sredstvaT2, pocetna Lokacija (0, 1), krajnja lokacija (10, 8), trajanje voznje u sek 1, desio se kvar false, ima promociju false
+datum i vrijeme 2024-06-02 09:00, ime korisnika K1, ID prevoznog sredstvaA1, pocetna Lokacija (5, 5), krajnja lokacija (11, 5), trajanje voznje u sek 2, desio se kvar true, ima promociju false
+datum i vrijeme 2024-06-02 13:00, ime korisnika K5, ID prevoznog sredstvaB2, pocetna Lokacija (10, 5), krajnja lokacija (4, 2), trajanje voznje u sek 1, desio se kvar false, ima promociju false
+datum i vrijeme 2024-06-02 13:00, ime korisnika K5, ID prevoznog sredstvaA3, pocetna Lokacija (11, 11), krajnja lokacija (11, 5), trajanje voznje u sek 2, desio se kvar false, ima promociju false
+datum i vrijeme 2024-06-03 13:00, ime korisnika K1, ID prevoznog sredstvaT5, pocetna Lokacija (0, 0), krajnja lokacija (0, 0), trajanje voznje u sek 2, desio se kvar false, ima promociju false
