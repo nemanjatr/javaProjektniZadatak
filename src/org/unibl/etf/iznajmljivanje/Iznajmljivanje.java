@@ -2,11 +2,14 @@ package org.unibl.etf.iznajmljivanje;
 
 import org.unibl.etf.mapa.Mapa;
 import org.unibl.etf.mapa.PoljeNaMapi;
+
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Iznajmljivanje extends Thread {
 
+    /* ove konstante trebaju biti u PROPERTIES fajlu */
     public static final int DISTANCE_NARROW = 5;
     public static final int DISTANCE_WIDE = 10;
     public static final double DISCOUNT = 0.1;
@@ -14,6 +17,7 @@ public class Iznajmljivanje extends Thread {
     public static final int CAR_UNIT_PRICE = 3;
     public static final int BIKE_UNIT_PRICE = 2;
     public static final int SCOOTER_UNIT_PRICE = 1;
+    public static final String NAZIV_FOLDERA_SA_RACUNIMA = "racuni";
 
     private static int brojacInstanci = 0;
     private int redniBrojIznajmljivanja;
@@ -34,7 +38,8 @@ public class Iznajmljivanje extends Thread {
     private Racun racunZaPlacanje;
 
 
-    private static Object lock = new Object();
+    private static final Object lock = new Object();
+    private static final Object lockPutanjaRacuna = new Object();
 
 
 
@@ -68,7 +73,6 @@ public class Iznajmljivanje extends Thread {
         this.trajanjeVoznjeSekunde = Integer.parseInt(trajanjeVoznjeSekunde);
         this.desioSeKvar = desioSeKvar.equalsIgnoreCase("da");
         this.imaPromociju = imaPromociju.equalsIgnoreCase("da");
-        this.racunZaPlacanje = new Racun();
     }
 
     public LocalDateTime getDatumVrijeme() {
@@ -125,7 +129,9 @@ public class Iznajmljivanje extends Thread {
         }
     }
 
-    public void generisiRacun(){
+    public void generisiRacun() {
+        this.racunZaPlacanje = new Racun();
+
         this.racunanjeOsnovneCijene();
         this.racunanjeTarifeNaplacivanja();
         this.racunanjeIznosa();
@@ -214,6 +220,31 @@ public class Iznajmljivanje extends Thread {
         }
 
         System.out.println("=> Vozilo " + identifikatorPrevoznogSredstva + " je stiglo na odrediste.");
+
+        synchronized (lockPutanjaRacuna) {
+            File trenutnaPutanja = new File(System.getProperty("user.dir"));
+            File putanjaFolderaZaRacune = new File(trenutnaPutanja + File.separator + NAZIV_FOLDERA_SA_RACUNIMA);
+            if(!putanjaFolderaZaRacune.exists()) {
+                putanjaFolderaZaRacune.mkdir();
+            }
+
+            //String imeFajla = this.redniBrojIznajmljivanja + "_" + this.datumVrijeme;
+            String imeFajla = String.valueOf(this.redniBrojIznajmljivanja);
+            File putanjaFajlaRacuna = new File(putanjaFolderaZaRacune + File.separator + imeFajla);
+            try {
+                PrintWriter pisacFajla = new PrintWriter(new FileWriter(putanjaFajlaRacuna));
+                this.generisiRacun();
+                pisacFajla.println("Iznajmljivanje " + redniBrojIznajmljivanja + " datum i vrijeme " + datumVrijeme +
+                        " \n\tvrijednost racuna: " + racunZaPlacanje.getUkupnoZaPlacanje() );
+                pisacFajla.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+
+            }
+
+
+        }
     }
 
 }
