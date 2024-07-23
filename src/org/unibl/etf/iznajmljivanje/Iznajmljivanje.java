@@ -137,9 +137,10 @@ public class Iznajmljivanje extends Thread {
     @Override
     public String toString(){
         return "datum i vrijeme " + datumVrijeme.toLocalDate() + " " + datumVrijeme.toLocalTime() + ", " +
-                "ime korisnika " + imeKorisnika + ", " + "pocetna Lokacija " + pocetnaLokacija + ", " +
-                "krajnja lokacija " + krajnjaLokacija + ", " + "trajanje voznje u sek " + trajanjeVoznjeSekunde + ", " +
-                "desio se kvar " + desioSeKvar + ", " + "ima promociju " + imaPromociju;
+                "ime korisnika " + imeKorisnika + ", " + "ID prevoznog sredstva" + identifikatorPrevoznogSredstva + ", " +
+                "pocetna Lokacija " + pocetnaLokacija + ", " + "krajnja lokacija " + krajnjaLokacija + ", " +
+                "trajanje voznje u sek " + trajanjeVoznjeSekunde + ", " + "desio se kvar " + desioSeKvar + ", " +
+                "ima promociju " + imaPromociju;
 
     }
 
@@ -162,19 +163,35 @@ public class Iznajmljivanje extends Thread {
         boolean iDoKraja = false;
         boolean jdoKraja = false;
 
-        while (trenutnaLokacija.getKoordinataX() < krajnjaLokacija.getKoordinataX()
-                || trenutnaLokacija.getKoordinataY() < krajnjaLokacija.getKoordinataY()) {
+        int inkrementPozicijeX = 0;
+        int inkrementPozicijeY = 0;
+
+        if(pocetnaLokacija.getKoordinataX() < krajnjaLokacija.getKoordinataX()) {
+            inkrementPozicijeX = 1;
+        } else if(pocetnaLokacija.getKoordinataX() > krajnjaLokacija.getKoordinataX()) {
+            inkrementPozicijeX = -1;
+        }
+
+        if(pocetnaLokacija.getKoordinataY() < krajnjaLokacija.getKoordinataY()) {
+            inkrementPozicijeY = 1;
+        } else if(pocetnaLokacija.getKoordinataY() > krajnjaLokacija.getKoordinataY()) {
+            inkrementPozicijeY = -1;
+        }
+
+
+        while (trenutnaLokacija.getKoordinataX() !=  krajnjaLokacija.getKoordinataX()
+                || trenutnaLokacija.getKoordinataY() != krajnjaLokacija.getKoordinataY()) {
 
             synchronized (lock) {
 
                 if (naizmjenicno) {
-                    i++;
+                    i += inkrementPozicijeX;
                     if (i == krajnjaLokacija.getKoordinataX()) {
                         iDoKraja = true;
                         naizmjenicno = !naizmjenicno;
                     }
                 } else {
-                    j++;
+                    j += inkrementPozicijeY;
                     if (j == krajnjaLokacija.getKoordinataY()) {
                         jdoKraja = true;
                         naizmjenicno = !naizmjenicno;
