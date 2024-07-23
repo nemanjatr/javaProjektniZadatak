@@ -5,10 +5,7 @@ import org.unibl.etf.vozila.ElektricniBicikl;
 import org.unibl.etf.vozila.ElektricniTrotinet;
 import org.unibl.etf.vozila.PrevoznoSredstvo;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,6 +86,7 @@ public class EMobilityCompany {
 
 
     public void ucitajIznajmljivanjaIzFajla() {
+
         try {
             File fajlPutanjaZaIznajmljivanja = new File("iznajmljivanja.csv"); // vjerovatno treba biti static final clan
             BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja));
@@ -129,6 +127,8 @@ public class EMobilityCompany {
                         pocetnaLokacija, krajnjaLokacija, trajanjeVoznjeSekunde, kvar, promocija));
 
             }
+
+            // poslije while petlje sortiranje ArrayList-e
             iznajmljivanja.sort(new Comparator<Iznajmljivanje>() {
                 @Override
                 public int compare(Iznajmljivanje o1, Iznajmljivanje o2) {
@@ -136,9 +136,25 @@ public class EMobilityCompany {
                 }
             });
 
+            // za testiranje //
+            /*
+            PrintWriter pisac = new PrintWriter(new BufferedWriter(new FileWriter("iznajmljivanja_2_sortirano.txt")));
+            for(Iznajmljivanje i : iznajmljivanja) {
+                pisac.println(i);
+                //System.out.println(i);
+            }
+            pisac.close();
+            */
+
+            // trebalo bi mozda zatvarati resurse u finally bloku
+
+            citacIznajmljivanja.close();
+
         } catch(IOException e) {
             System.out.println("Greska pri ucitavanju iznajmljivanja iz fajla!");
             e.printStackTrace();
+        } finally {
+            // za zatvaranje resursa
         }
     }
 
