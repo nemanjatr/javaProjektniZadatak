@@ -63,20 +63,5 @@ public class Main {
         }
 
 
-//        for(Iznajmljivanje i : eMobilityCompany.getIznajmljivanja()) {
-//            //System.out.println(i);
-//            i.start();
-//        }
-
-//        for(Iznajmljivanje i : eMobilityCompany.getIznajmljivanja()) {
-//            //System.out.println(i);
-//            try{
-//                i.join();
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-
     }
 }
