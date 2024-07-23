@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -25,8 +26,15 @@ public class Main {
         Map<LocalDateTime, List<Iznajmljivanje>> grupisanoPoDatumVrijeme =
                 eMobilityCompany.getIznajmljivanja().stream().collect(Collectors.groupingBy(Iznajmljivanje::getDatumVrijeme));
 
+        Map<LocalDateTime, List<Iznajmljivanje>> sortiranaMapa = new TreeMap<>(grupisanoPoDatumVrijeme);
+
+        sortiranaMapa.forEach((dateTime, iznajmljivanja) -> {
+            System.out.println("DatumVrijeme: " + dateTime);
+            iznajmljivanja.forEach(iznajmljivanje -> System.out.println(" - " + iznajmljivanje));
+        });
+
         ArrayList<ArrayList<Iznajmljivanje>> listaIznajmljivanjaPoDatumVrijeme = new ArrayList<>();
-        for(List<Iznajmljivanje> grupa : grupisanoPoDatumVrijeme.values()) {
+        for(List<Iznajmljivanje> grupa : sortiranaMapa.values()) {
             listaIznajmljivanjaPoDatumVrijeme.add(new ArrayList<>(grupa));
         }
 
@@ -48,7 +56,7 @@ public class Main {
 
             System.out.println("------------------------------------");
             try {
-                Thread.sleep(5000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -68,13 +76,6 @@ public class Main {
 //                e.printStackTrace();
 //            }
 //        }
-
-
-
-
-
-
-
 
 
     }
