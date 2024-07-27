@@ -1,7 +1,9 @@
 package org.unibl.etf.iznajmljivanje;
 
+import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
 import org.unibl.etf.mapa.Mapa;
 import org.unibl.etf.mapa.PoljeNaMapi;
+import org.unibl.etf.vozila.PrevoznoSredstvo;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -26,7 +28,9 @@ public class Iznajmljivanje extends Thread {
     private String imeKorisnika;
 
     // obratiti paznju jer ovo polje nije navedeno u tekstu zadatka, ali ja mislim da je neophodno
-    private String identifikatorPrevoznogSredstva;
+    //private String identifikatorPrevoznogSredstva;
+    private PrevoznoSredstvo prevoznoSredstvo;
+
 
     private PoljeNaMapi pocetnaLokacija;
     private PoljeNaMapi krajnjaLokacija;
@@ -45,48 +49,58 @@ public class Iznajmljivanje extends Thread {
 
 
 
-    public Iznajmljivanje(String datumVrijeme, String imeKorisnika, String identifikatorPrevoznogSredstva, String pocetnaLokacija,
-                          String krajnjaLokacija, String trajanjeVoznjeSekunde, String desioSeKvar, String imaPromociju){
+    public Iznajmljivanje(String datumVrijeme, String imeKorisnika, PrevoznoSredstvo prevoznoSredstvo, String pocetnaLokacija,
+                          String krajnjaLokacija, String trajanjeVoznjeSekunde, String desioSeKvar, String imaPromociju) throws PogresniUlazniPodaciException {
 
         brojacInstanci++;
         this.redniBrojIznajmljivanja = brojacInstanci;
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy H:mm");
-        this.datumVrijeme = LocalDateTime.parse(datumVrijeme.trim(), formatter);
-        this.imeKorisnika = imeKorisnika;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy H:mm");
+            this.datumVrijeme = LocalDateTime.parse(datumVrijeme.trim(), formatter);
+            this.imeKorisnika = imeKorisnika;
+            this.prevoznoSredstvo = prevoznoSredstvo;
 
-        //
-        this.identifikatorPrevoznogSredstva = identifikatorPrevoznogSredstva;
-        //
+            String[] parsiranaPocetnaLokacija = pocetnaLokacija.split(",");
+            this.pocetnaLokacija = new PoljeNaMapi(Integer.parseInt(parsiranaPocetnaLokacija[0]),
+                    Integer.parseInt(parsiranaPocetnaLokacija[1]));
+            String[] parsiranaKrajnjaLokacija = krajnjaLokacija.split(",");
+            this.krajnjaLokacija = new PoljeNaMapi(Integer.parseInt(parsiranaKrajnjaLokacija[0]),
+                    Integer.parseInt(parsiranaKrajnjaLokacija[1]));
 
-        //
+            if(!this.pocetnaLokacija.unutarDozvoljenihGranica() || !this.krajnjaLokacija.unutarDozvoljenihGranica()) {
+                System.out.println("da");
+                throw new PogresniUlazniPodaciException();
+            }
 
-        String[] parsiranaPocetnaLokacija = pocetnaLokacija.split(",");
-        this.pocetnaLokacija = new PoljeNaMapi(Integer.parseInt(parsiranaPocetnaLokacija[0]),
-                Integer.parseInt(parsiranaPocetnaLokacija[1]));
-        String[] parsiranaKrajnjaLokacija = krajnjaLokacija.split(",");
-        this.krajnjaLokacija = new PoljeNaMapi(Integer.parseInt(parsiranaKrajnjaLokacija[0]),
-                Integer.parseInt(parsiranaKrajnjaLokacija[1]));
+            //
 
-        //
+            this.trajanjeVoznjeSekunde = Integer.parseInt(trajanjeVoznjeSekunde);
+            this.desioSeKvar = desioSeKvar.equalsIgnoreCase("da");
+            this.imaPromociju = imaPromociju.equalsIgnoreCase("da");
 
-        this.trajanjeVoznjeSekunde = Integer.parseInt(trajanjeVoznjeSekunde);
-        this.desioSeKvar = desioSeKvar.equalsIgnoreCase("da");
-        this.imaPromociju = imaPromociju.equalsIgnoreCase("da");
+        } catch(NumberFormatException e) {
+            throw new PogresniUlazniPodaciException();
+        }
+
     }
 
     public LocalDateTime getDatumVrijeme() {
         return datumVrijeme;
     }
 
+    public PrevoznoSredstvo getPrevoznoSredstvo() {
+        return prevoznoSredstvo;
+    }
+
 
 
     public void racunanjeOsnovneCijene() {
-        if('A' == identifikatorPrevoznogSredstva.charAt(0)) {
+        if('A' == prevoznoSredstvo.getJedinstveniIdentifikator().charAt(0)) {
             racunZaPlacanje.setOsnovnaCijena((int)CAR_UNIT_PRICE * trajanjeVoznjeSekunde);
-        } else if('B' == identifikatorPrevoznogSredstva.charAt(0)) {
+        } else if('B' == prevoznoSredstvo.getJedinstveniIdentifikator().charAt(0)) {
             racunZaPlacanje.setOsnovnaCijena((int)BIKE_UNIT_PRICE * trajanjeVoznjeSekunde);
-        } else if('T' == identifikatorPrevoznogSredstva.charAt(0)) {
+        } else if('T' == prevoznoSredstvo.getJedinstveniIdentifikator().charAt(0)) {
             racunZaPlacanje.setOsnovnaCijena((int)SCOOTER_UNIT_PRICE * trajanjeVoznjeSekunde);
         } else {
             System.out.println("Pogresan jedinstveni identifikator vozila u podacima za iznajmljivanje");
@@ -143,7 +157,7 @@ public class Iznajmljivanje extends Thread {
     @Override
     public String toString(){
         return "datum i vrijeme " + datumVrijeme.toLocalDate() + " " + datumVrijeme.toLocalTime() + ", " +
-                "ime korisnika " + imeKorisnika + ", " + "ID prevoznog sredstva" + identifikatorPrevoznogSredstva + ", " +
+                "ime korisnika " + imeKorisnika + ", " + "ID prevoznog sredstva" + prevoznoSredstvo.getJedinstveniIdentifikator() + ", " +
                 "pocetna Lokacija " + pocetnaLokacija + ", " + "krajnja lokacija " + krajnjaLokacija + ", " +
                 "trajanje voznje u sek " + trajanjeVoznjeSekunde + ", " + "desio se kvar " + desioSeKvar + ", " +
                 "ima promociju " + imaPromociju;
@@ -158,8 +172,8 @@ public class Iznajmljivanje extends Thread {
         double trajanjeZadrzavanjaNaPoljuSekunde = (double) trajanjeVoznjeSekunde / udaljenostKretanja;
 
 
-        System.out.println("Iznajmljivanje " + redniBrojIznajmljivanja + ", vozilo " + identifikatorPrevoznogSredstva);
-        System.out.println("=> Vozilo " + identifikatorPrevoznogSredstva + " se nalazi na pocetnoj lokaciji " + pocetnaLokacija);
+        System.out.println("Iznajmljivanje " + redniBrojIznajmljivanja + ", vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator());
+        System.out.println("=> Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " se nalazi na pocetnoj lokaciji " + pocetnaLokacija);
         PoljeNaMapi trenutnaLokacija = pocetnaLokacija;
         //pocetnaLokacija.setZauzeto();
 
@@ -216,10 +230,10 @@ public class Iznajmljivanje extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("  *** Vozilo " + identifikatorPrevoznogSredstva + " se nalazi na lokaciji " + trenutnaLokacija);
+            System.out.println("  *** Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " se nalazi na lokaciji " + trenutnaLokacija);
         }
 
-        System.out.println("=> Vozilo " + identifikatorPrevoznogSredstva + " je stiglo na odrediste.");
+        System.out.println("=> Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " je stiglo na odrediste.");
 
         synchronized (lockPutanjaRacuna) {
             File trenutnaPutanja = new File(System.getProperty("user.dir"));

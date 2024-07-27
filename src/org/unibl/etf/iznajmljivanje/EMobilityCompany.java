@@ -4,11 +4,14 @@ import org.unibl.etf.vozila.ElektricniAutomobil;
 import org.unibl.etf.vozila.ElektricniBicikl;
 import org.unibl.etf.vozila.ElektricniTrotinet;
 import org.unibl.etf.vozila.PrevoznoSredstvo;
+import org.unibl.etf.izuzeci.*;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class EMobilityCompany {
 
@@ -88,44 +91,72 @@ public class EMobilityCompany {
     public void ucitajIznajmljivanjaIzFajla() {
 
         try {
-            File fajlPutanjaZaIznajmljivanja = new File("iznajmljivanja.csv"); // vjerovatno treba biti static final clan
+            File fajlPutanjaZaIznajmljivanja = new File("iznajmljivanja_2.csv"); // vjerovatno treba biti static final clan
             BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja));
 
             String linijaFajla;
             String regex = "\"([^\"]*)\"|([^,]+)";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher;
+
             ArrayList<String> karakteristikeIznajmljivanja = new ArrayList<>();
 
             citacIznajmljivanja.readLine();
             while((linijaFajla = citacIznajmljivanja.readLine()) != null) {
 
-                karakteristikeIznajmljivanja.clear();
-                matcher = pattern.matcher(linijaFajla);
-                while (matcher.find()) {
-                    if (matcher.group(1) != null) {
-                        karakteristikeIznajmljivanja.add(matcher.group(1));
-                    } else {
-                        karakteristikeIznajmljivanja.add(matcher.group(2));
+
+                try {
+                    karakteristikeIznajmljivanja.clear();
+                    matcher = pattern.matcher(linijaFajla);
+                    while (matcher.find()) {
+                        if (matcher.group(1) != null) {
+                            karakteristikeIznajmljivanja.add(matcher.group(1));
+                        } else {
+                            karakteristikeIznajmljivanja.add(matcher.group(2));
+                        }
                     }
+
+                    try {
+                        if(karakteristikeIznajmljivanja.size() < 8) {
+                            throw new NedovoljnoUlaznihPodatakaException();
+                        } else {
+
+                            String datumVrijeme = karakteristikeIznajmljivanja.get(0);
+                            String imeKorisnika = karakteristikeIznajmljivanja.get(1);
+
+                            String identifikatorPrevoznogSredstva = karakteristikeIznajmljivanja.get(2); // ne salje se u konstruktor Iznajmljivanja
+                            // jer u tekstu zadatka nije navedeno da se ovaj podataka tu treba cuvati??
+                            // !update ->  ipak, na kraju, saljem u konstruktor je mi treba u klasi Iznajmljivanje
+
+                            PrevoznoSredstvo prevoznoSredstvo = prevoznaSredstva.get(identifikatorPrevoznogSredstva);
+                            if(prevoznoSredstvo == null) {
+                                throw new PrevoznoSredstvoNePostojiException("Prevozno sredstvo " +
+                                        identifikatorPrevoznogSredstva + " nije moguce iznajmiti, jer ne postoji");
+                            }
+
+
+                            String pocetnaLokacija = karakteristikeIznajmljivanja.get(3);
+                            String krajnjaLokacija = karakteristikeIznajmljivanja.get(4);
+                            String trajanjeVoznjeSekunde = karakteristikeIznajmljivanja.get(5);
+                            String kvar = karakteristikeIznajmljivanja.get(6);
+                            String promocija = karakteristikeIznajmljivanja.get(7);
+
+                            try {
+                                iznajmljivanja.add(new Iznajmljivanje(datumVrijeme, imeKorisnika, prevoznoSredstvo,
+                                        pocetnaLokacija, krajnjaLokacija, trajanjeVoznjeSekunde, kvar, promocija));
+                            } catch (PogresniUlazniPodaciException e) {
+
+                            }
+
+                        }
+
+                    } catch (NedovoljnoUlaznihPodatakaException e) {
+
+                    }
+
+                } catch (PrevoznoSredstvoNePostojiException e) {
+
                 }
-
-                String datumVrijeme = karakteristikeIznajmljivanja.get(0);
-                String imeKorisnika = karakteristikeIznajmljivanja.get(1);
-
-                String identifikatorPrevoznogSredstva = karakteristikeIznajmljivanja.get(2); // ne salje se u konstruktor Iznajmljivanja
-                // jer u tekstu zadatka nije navedeno da se ovaj podataka tu treba cuvati??
-                // !update ->  ipak, na kraju, saljem u konstruktor je mi treba u klasi Iznajmljivanje
-
-                String pocetnaLokacija = karakteristikeIznajmljivanja.get(3);
-                String krajnjaLokacija = karakteristikeIznajmljivanja.get(4);
-                String trajanjeVoznjeSekunde = karakteristikeIznajmljivanja.get(5);
-                String kvar = karakteristikeIznajmljivanja.get(6);
-                String promocija = karakteristikeIznajmljivanja.get(7);
-
-                iznajmljivanja.add(new Iznajmljivanje(datumVrijeme, imeKorisnika, identifikatorPrevoznogSredstva,
-                        pocetnaLokacija, krajnjaLokacija, trajanjeVoznjeSekunde, kvar, promocija));
-
             }
 
             // poslije while petlje sortiranje ArrayList-e
@@ -155,6 +186,58 @@ public class EMobilityCompany {
             e.printStackTrace();
         } finally {
             // za zatvaranje resursa
+        }
+    }
+
+    public void obaviIznajmljivanja() {
+        this.ucitajPrevoznaSredstvaIzFajla();
+        this.ucitajIznajmljivanjaIzFajla();
+
+        Map<LocalDateTime, List<Iznajmljivanje>> grupisanoPoDatumVrijeme =
+                iznajmljivanja.stream().collect(Collectors.groupingBy(Iznajmljivanje::getDatumVrijeme));
+
+        Map<LocalDateTime, List<Iznajmljivanje>> sortiranaMapa = new TreeMap<>(grupisanoPoDatumVrijeme);
+
+        sortiranaMapa.forEach((dateTime, iznajmljivanja) -> {
+            System.out.println("DatumVrijeme: " + dateTime);
+            iznajmljivanja.forEach(iznajmljivanje -> System.out.println(" - " + iznajmljivanje));
+        });
+
+        ArrayList<ArrayList<Iznajmljivanje>> listaIznajmljivanjaPoDatumVrijeme = new ArrayList<>();
+        for(List<Iznajmljivanje> grupa : sortiranaMapa.values()) {
+            listaIznajmljivanjaPoDatumVrijeme.add(new ArrayList<>(grupa));
+        }
+
+        for(ArrayList<Iznajmljivanje> podlista : listaIznajmljivanjaPoDatumVrijeme) {
+            System.out.println("Grupa " + podlista.getFirst().getDatumVrijeme());
+
+            Map<PrevoznoSredstvo, Integer> brojPonavljanjaUListi = new HashMap<>();
+
+            for(Iznajmljivanje i : podlista) {
+                if(brojPonavljanjaUListi.containsKey(i.getPrevoznoSredstvo())) {
+                    brojPonavljanjaUListi.put(i.getPrevoznoSredstvo(), brojPonavljanjaUListi.get(i.getPrevoznoSredstvo()) + 1);
+                    System.out.println("Iznajmljivanje: (" + i + ") nije moguce, jer je vozilo vec iznajmljeno");
+                } else {
+                    brojPonavljanjaUListi.put(i.getPrevoznoSredstvo(), 1);
+                    i.start();
+                }
+
+            }
+
+            try {
+                for(Iznajmljivanje i : podlista) {
+                    i.join();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("------------------------------------");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
