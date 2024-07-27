@@ -36,6 +36,13 @@ public class PoljeNaMapi {
        return false;
     }
 
+    public boolean unutarDozvoljenihGranica() {
+        if((koordinataX >= 0 && koordinataX <= 19) && (koordinataY >= 0 && koordinataY <= 19)) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "(" + koordinataX + ", " + koordinataY + ")";
