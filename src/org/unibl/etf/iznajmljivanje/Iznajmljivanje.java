@@ -46,9 +46,6 @@ public class Iznajmljivanje extends Thread {
     private static final Object lockPutanjaRacuna = new Object();
 
 
-
-
-
     public Iznajmljivanje(String datumVrijeme, String imeKorisnika, PrevoznoSredstvo prevoznoSredstvo, String pocetnaLokacija,
                           String krajnjaLokacija, String trajanjeVoznjeSekunde, String desioSeKvar, String imaPromociju) throws PogresniUlazniPodaciException {
 
@@ -69,11 +66,8 @@ public class Iznajmljivanje extends Thread {
                     Integer.parseInt(parsiranaKrajnjaLokacija[1]));
 
             if(!this.pocetnaLokacija.unutarDozvoljenihGranica() || !this.krajnjaLokacija.unutarDozvoljenihGranica()) {
-                System.out.println("da");
                 throw new PogresniUlazniPodaciException();
             }
-
-            //
 
             this.trajanjeVoznjeSekunde = Integer.parseInt(trajanjeVoznjeSekunde);
             this.desioSeKvar = desioSeKvar.equalsIgnoreCase("da");

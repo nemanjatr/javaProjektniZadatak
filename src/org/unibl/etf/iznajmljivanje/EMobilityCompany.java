@@ -34,7 +34,6 @@ public class EMobilityCompany {
 
 
 
-
     public ArrayList<PrevoznoSredstvo> getPrevoznaSredstva() {
         ArrayList<PrevoznoSredstvo> listaPrevoznihSredstava = new ArrayList<>(prevoznaSredstva.values());
         return listaPrevoznihSredstava;
@@ -50,35 +49,49 @@ public class EMobilityCompany {
             BufferedReader citacVozila = new BufferedReader(new FileReader(fajlPutanjaZaPrevoznaSredstva));
             String linijaFajla;
 
-
-
             citacVozila.readLine();
             while((linijaFajla = citacVozila.readLine()) != null) {
-                // parsiranje fajla
-                String[] karakteristikeVozila = linijaFajla.split(",");
 
-                String jedinstveniIdenitifikator = karakteristikeVozila[0];
-                String proizvodjac = karakteristikeVozila[1];
-                String model = karakteristikeVozila[2];
-                String datumNabavke = karakteristikeVozila[3];
-                String cijena = karakteristikeVozila[4];
-                String domet = karakteristikeVozila[5];
-                String maksimalnaBrzina = karakteristikeVozila[6];
-                String opis = karakteristikeVozila[7];
-                String vrsta =  karakteristikeVozila[8];
+                try {
 
-                if(!prevoznaSredstva.containsKey(jedinstveniIdenitifikator)) {
-                    if('A' == jedinstveniIdenitifikator.charAt(0)){
-                        prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniAutomobil(jedinstveniIdenitifikator, Double.parseDouble(cijena),
-                                proizvodjac, model, 100, datumNabavke, opis));
-                    } else if('B' == jedinstveniIdenitifikator.charAt(0)){
-                        prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniBicikl(jedinstveniIdenitifikator, Double.parseDouble(cijena),
-                                proizvodjac, model, 100, Integer.parseInt(domet)));
-                    } else if('T' == jedinstveniIdenitifikator.charAt(0)){
-                        prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniTrotinet(jedinstveniIdenitifikator, Double.parseDouble(cijena),
-                                proizvodjac, model, 100, Integer.parseInt(maksimalnaBrzina)));
+                    String[] karakteristikeVozila = linijaFajla.split(",");
+
+                    if(karakteristikeVozila.length < 9) {
+                        throw new PogresniUlazniPodaciException();
                     }
+
+                    String jedinstveniIdenitifikator = karakteristikeVozila[0];
+                    String proizvodjac = karakteristikeVozila[1];
+                    String model = karakteristikeVozila[2];
+                    String datumNabavke = karakteristikeVozila[3];
+                    String cijena = karakteristikeVozila[4];
+                    String domet = karakteristikeVozila[5];
+                    String maksimalnaBrzina = karakteristikeVozila[6];
+                    String opis = karakteristikeVozila[7];
+                    String vrsta =  karakteristikeVozila[8];
+
+                    if(jedinstveniIdenitifikator.isEmpty()) {
+                        throw new PogresniUlazniPodaciException();
+                    }
+
+                    if(!prevoznaSredstva.containsKey(jedinstveniIdenitifikator)) {
+                        if('A' == jedinstveniIdenitifikator.charAt(0)){
+                            prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniAutomobil(jedinstveniIdenitifikator, cijena,
+                                    proizvodjac, model, datumNabavke, opis));
+                        } else if('B' == jedinstveniIdenitifikator.charAt(0)){
+                            prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniBicikl(jedinstveniIdenitifikator, cijena,
+                                    proizvodjac, model, domet));
+                        } else if('T' == jedinstveniIdenitifikator.charAt(0)){
+                            prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniTrotinet(jedinstveniIdenitifikator, cijena,
+                                    proizvodjac, model, maksimalnaBrzina));
+                        }
+                    } else {
+                        System.out.println("Prevozno sredstvo " + jedinstveniIdenitifikator + " vec ucitano.");
+                    }
+                } catch (PogresniUlazniPodaciException e) {
+
                 }
+
             }
             citacVozila.close();
         } catch(IOException e) {

@@ -1,5 +1,5 @@
 ID,Proizvodjac,Model,Datum nabavke,Cijena,Domet,Max Brzina,Opis,Vrsta
-A1,A,M1,1.5.2024.,50000,,,primjer 1,automobil
+A1,A,M1,1.5.2024.,50000,,,Primjer 1,automobil
 B1,B,BM1,,3000,100,,,bicikl
 T1,T,TM1,,1000,,50,,trotinet
 A2,A,M2,16.5.2024.,35000,,,primjer 2,automobil
