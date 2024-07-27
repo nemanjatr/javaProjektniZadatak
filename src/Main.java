@@ -15,52 +15,10 @@ public class Main {
 
         EMobilityCompany eMobilityCompany = EMobilityCompany.getInstanca();
         Mapa mapa = new Mapa();
-
-        eMobilityCompany.ucitajPrevoznaSredstvaIzFajla();
-        for(PrevoznoSredstvo p : eMobilityCompany.getPrevoznaSredstva()) {
-            //System.out.println(p);
-        }
+        eMobilityCompany.obaviIznajmljivanja();
 
 
-        eMobilityCompany.ucitajIznajmljivanjaIzFajla();
-        Map<LocalDateTime, List<Iznajmljivanje>> grupisanoPoDatumVrijeme =
-                eMobilityCompany.getIznajmljivanja().stream().collect(Collectors.groupingBy(Iznajmljivanje::getDatumVrijeme));
 
-        Map<LocalDateTime, List<Iznajmljivanje>> sortiranaMapa = new TreeMap<>(grupisanoPoDatumVrijeme);
-
-        sortiranaMapa.forEach((dateTime, iznajmljivanja) -> {
-            System.out.println("DatumVrijeme: " + dateTime);
-            iznajmljivanja.forEach(iznajmljivanje -> System.out.println(" - " + iznajmljivanje));
-        });
-
-        ArrayList<ArrayList<Iznajmljivanje>> listaIznajmljivanjaPoDatumVrijeme = new ArrayList<>();
-        for(List<Iznajmljivanje> grupa : sortiranaMapa.values()) {
-            listaIznajmljivanjaPoDatumVrijeme.add(new ArrayList<>(grupa));
-        }
-
-        for(ArrayList<Iznajmljivanje> podlista : listaIznajmljivanjaPoDatumVrijeme) {
-            System.out.println("Grupa " + podlista.getFirst().getDatumVrijeme());
-
-            for(Iznajmljivanje i : podlista) {
-                //System.out.println(i);
-                i.start();
-            }
-
-            try {
-                for(Iznajmljivanje i : podlista) {
-                    i.join();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println("------------------------------------");
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
 
 
     }
