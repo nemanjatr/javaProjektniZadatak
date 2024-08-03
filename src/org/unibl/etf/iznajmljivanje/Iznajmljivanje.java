@@ -1,61 +1,80 @@
 package org.unibl.etf.iznajmljivanje;
 
 import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
+import org.unibl.etf.korisnik.Korisnik;
 import org.unibl.etf.mapa.Mapa;
 import org.unibl.etf.mapa.PoljeNaMapi;
+import org.unibl.etf.vozila.ElektricniAutomobil;
+import org.unibl.etf.vozila.ElektricniBicikl;
+import org.unibl.etf.vozila.ElektricniTrotinet;
 import org.unibl.etf.vozila.PrevoznoSredstvo;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Properties;
 
 public class Iznajmljivanje extends Thread {
 
-    /* ove konstante trebaju biti u PROPERTIES fajlu */
-    public static final int DISTANCE_NARROW = 5;
-    public static final int DISTANCE_WIDE = 10;
-    public static final double DISCOUNT = 0.1;
-    public static final double DISCOUT_PROM = 0.2;
-    public static final int CAR_UNIT_PRICE = 3;
-    public static final int BIKE_UNIT_PRICE = 2;
-    public static final int SCOOTER_UNIT_PRICE = 1;
-    public static final String NAZIV_FOLDERA_SA_RACUNIMA = "racuni";
+    private static final String PROPERTIES_PODACI_GRESKA = "Pogresni podaci unutar properties fajla!";
+    private static final String PROPERTIES_UPOZORENJE = "Rezultati su mozda pogresni. Molimo provjerite vrijednosti unutar properties fajla!";
+    private static final Properties properties;
 
-    private static int brojacInstanci = 0;
+
+    private static int brojacIznajmljivanja = 0;
     private int redniBrojIznajmljivanja;
 
     private LocalDateTime  datumVrijeme;
-    private String imeKorisnika;
+    private Korisnik korisnik;
 
     // obratiti paznju jer ovo polje nije navedeno u tekstu zadatka, ali ja mislim da je neophodno
     //private String identifikatorPrevoznogSredstva;
     private PrevoznoSredstvo prevoznoSredstvo;
-
 
     private PoljeNaMapi pocetnaLokacija;
     private PoljeNaMapi krajnjaLokacija;
     private int trajanjeVoznjeSekunde;
     private boolean desioSeKvar;
     private boolean imaPromociju;
+    private boolean imaPopust;
+
 
     private String tarifaNaplacivanja;
     private Racun racunZaPlacanje;
-
 
     private static final Object lock = new Object();
     private static final Object lockPutanjaRacuna = new Object();
 
 
+    static {
+        properties = new Properties();
+        try {
+            properties.load(new FileInputStream("parametri.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        File folderRacuna = new File(properties.get("RACUNI_PUTANJA").toString());
+        if(!folderRacuna.exists()) {
+            folderRacuna.mkdir();
+        } else {
+            obrisiFajloveUnutarDirektorijuma(folderRacuna);
+        }
+
+        File folderSerijalizacije = new File(properties.get("SERIJALIZACIJA_PUTANJA").toString());
+        if(!folderSerijalizacije.exists()) {
+            folderSerijalizacije.mkdir();
+        } else {
+            obrisiFajloveUnutarDirektorijuma(folderSerijalizacije);
+        }
+    }
+
     public Iznajmljivanje(String datumVrijeme, String imeKorisnika, PrevoznoSredstvo prevoznoSredstvo, String pocetnaLokacija,
                           String krajnjaLokacija, String trajanjeVoznjeSekunde, String desioSeKvar, String imaPromociju) throws PogresniUlazniPodaciException {
-
-        brojacInstanci++;
-        this.redniBrojIznajmljivanja = brojacInstanci;
 
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy H:mm");
             this.datumVrijeme = LocalDateTime.parse(datumVrijeme.trim(), formatter);
-            this.imeKorisnika = imeKorisnika;
+            this.korisnik = new Korisnik(imeKorisnika);
             this.prevoznoSredstvo = prevoznoSredstvo;
 
             String[] parsiranaPocetnaLokacija = pocetnaLokacija.split(",");
@@ -87,79 +106,143 @@ public class Iznajmljivanje extends Thread {
         return prevoznoSredstvo;
     }
 
-
-
-    public void racunanjeOsnovneCijene() {
-        if('A' == prevoznoSredstvo.getJedinstveniIdentifikator().charAt(0)) {
-            racunZaPlacanje.setOsnovnaCijena((int)CAR_UNIT_PRICE * trajanjeVoznjeSekunde);
-        } else if('B' == prevoznoSredstvo.getJedinstveniIdentifikator().charAt(0)) {
-            racunZaPlacanje.setOsnovnaCijena((int)BIKE_UNIT_PRICE * trajanjeVoznjeSekunde);
-        } else if('T' == prevoznoSredstvo.getJedinstveniIdentifikator().charAt(0)) {
-            racunZaPlacanje.setOsnovnaCijena((int)SCOOTER_UNIT_PRICE * trajanjeVoznjeSekunde);
-        } else {
-            System.out.println("Pogresan jedinstveni identifikator vozila u podacima za iznajmljivanje");
-        }
+    public Racun getRacunZaPlacanje() {
+        return racunZaPlacanje;
     }
 
-    public void racunanjeTarifeNaplacivanja(){
-        if(pocetnaLokacija.unutarUzegDijelaGrada()) {
+    public boolean isDesioSeKvar() {
+        return desioSeKvar;
+    }
+
+
+
+    private void racunanjeOsnovneCijene() throws PogresniUlazniPodaciException{
+
+        try {
+            if(prevoznoSredstvo instanceof ElektricniAutomobil) {
+                racunZaPlacanje.setOsnovnaCijena(Double.parseDouble(properties.get("CAR_UNIT_PRICE").toString()) * trajanjeVoznjeSekunde);
+            } else if(prevoznoSredstvo instanceof ElektricniBicikl) {
+                racunZaPlacanje.setOsnovnaCijena(Double.parseDouble(properties.get("BIKE_UNIT_PRICE").toString()) * trajanjeVoznjeSekunde);
+            } else if(prevoznoSredstvo instanceof ElektricniTrotinet) {
+                racunZaPlacanje.setOsnovnaCijena(Double.parseDouble(properties.get("SCOOTER_UNIT_PRICE").toString()) * trajanjeVoznjeSekunde);
+            } else {
+                System.out.println("Pogresan jedinstveni identifikator vozila u podacima za iznajmljivanje");
+            }
+
+        } catch (NumberFormatException e) {
+            throw new PogresniUlazniPodaciException(PROPERTIES_PODACI_GRESKA);
+        }
+
+    }
+
+    private void racunanjeTarifeNaplacivanja(){
+        if(pocetnaLokacija.unutarUzegDijelaGrada() && krajnjaLokacija.unutarUzegDijelaGrada()) {
             tarifaNaplacivanja = "uzi";
         } else {
             tarifaNaplacivanja = "siri";
         }
     }
 
-    public void racunanjeIznosa() {
-        int osnovnaCijena = racunZaPlacanje.getOsnovnaCijena();
-        if("uzi".equals(tarifaNaplacivanja)) {
-            racunZaPlacanje.setIznos(DISTANCE_NARROW * osnovnaCijena);
-        } else if("siri".equals(tarifaNaplacivanja)) {
-            racunZaPlacanje.setIznos(DISTANCE_WIDE * osnovnaCijena);
-        } else {
-            System.out.println("Greska u vrijednosti tarife naplacivanja. Ne odgovara ni tarifi za uzi dio grada niti za siri!");
+    private void racunanjeIznosa() throws PogresniUlazniPodaciException{
+        double osnovnaCijena = racunZaPlacanje.getOsnovnaCijena();
+
+        try {
+            if("uzi".equals(tarifaNaplacivanja)) {
+                racunZaPlacanje.setIznos(Double.parseDouble(properties.get("DISTANCE_NARROW").toString()) * osnovnaCijena);
+            } else if("siri".equals(tarifaNaplacivanja)) {
+                racunZaPlacanje.setIznos(Double.parseDouble(properties.get("DISTANCE_WIDE").toString()) * osnovnaCijena);
+            } else {
+                System.out.println("Greska u vrijednosti tarife naplacivanja. Ne odgovara tarifi niti za uzi dio grada niti za siri!");
+            }
+        } catch (NumberFormatException e) {
+            throw new PogresniUlazniPodaciException(PROPERTIES_PODACI_GRESKA);
         }
     }
 
-    public void racunanjeUkupnogPlacanja() {
-        int iznos = racunZaPlacanje.getIznos();
-        int iznosPromocije = 0;
-        int iznosPopusta = 0;
-        if(desioSeKvar) {
-            racunZaPlacanje.setUkupnoZaPlacanje(0);
-        } else {
-            if(redniBrojIznajmljivanja % 10 == 0) {
-                iznosPopusta = (int) (DISCOUNT * iznos);
+    private void racunanjeUkupnogPlacanja() throws PogresniUlazniPodaciException {
+        double osnovnaCijena = racunZaPlacanje.getOsnovnaCijena();
+
+        try {
+            if(desioSeKvar) {
+                racunZaPlacanje.setUkupnoZaPlacanje(0.0);
+            } else {
+                if(redniBrojIznajmljivanja % 10 == 0) {
+                    racunZaPlacanje.setIznosPopusta(Double.parseDouble(properties.get("DISCOUNT").toString()) * osnovnaCijena);
+                    imaPopust = true;
+                }
+                if(imaPromociju) {
+                    racunZaPlacanje.setIznosPromocije(Double.parseDouble(properties.get("DISCOUNT_PROM").toString()) * osnovnaCijena);
+                }
+                racunZaPlacanje.setUkupnoZaPlacanje(racunZaPlacanje.getIznos() - racunZaPlacanje.getIznosPopusta() - racunZaPlacanje.getIznosPromocije());
             }
-            if(imaPromociju) {
-                iznosPromocije = (int) (DISCOUT_PROM * iznos);
-            }
-            racunZaPlacanje.setUkupnoZaPlacanje(iznos - iznosPopusta - iznosPromocije);
+        } catch (NumberFormatException e) {
+            throw new PogresniUlazniPodaciException(PROPERTIES_PODACI_GRESKA);
         }
     }
 
     public void generisiRacun() {
         this.racunZaPlacanje = new Racun();
+        try {
+            this.racunanjeOsnovneCijene();
+            this.racunanjeTarifeNaplacivanja();
+            this.racunanjeIznosa();
+            this.racunanjeUkupnogPlacanja();
+            System.out.println("Racun za " + redniBrojIznajmljivanja + " iznajmljivanje: " + "\t\n" +
+                    "     * ukupno za placanje " + racunZaPlacanje.getUkupnoZaPlacanje());
 
-        this.racunanjeOsnovneCijene();
-        this.racunanjeTarifeNaplacivanja();
-        this.racunanjeIznosa();
-        this.racunanjeUkupnogPlacanja();
-        System.out.println("Racun za " + redniBrojIznajmljivanja + " iznajmljivanje: " + "\t\n" +
-                "     * ukupno za placanje " + racunZaPlacanje.getUkupnoZaPlacanje());
+        } catch (PogresniUlazniPodaciException e) {
+            System.out.println(PROPERTIES_UPOZORENJE);
+        }
+    }
+
+    public void upisiRacun() {
+
+        String stringDatumVrijeme = datumVrijeme.toString().replace(":", "_");
+        try(PrintWriter pisacFajlaRacuna = new PrintWriter(new BufferedWriter
+                (new FileWriter(properties.get("RACUNI_PUTANJA") + stringDatumVrijeme + "_" +
+                        korisnik.getImeKorisnika() + "_" + prevoznoSredstvo.getJedinstveniIdentifikator() + ".txt")))) {
+            pisacFajlaRacuna.println(this);
+            pisacFajlaRacuna.println(racunZaPlacanje);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void obrisiFajloveUnutarDirektorijuma(File putanjaDirektorijuma) {
+        File[] files = putanjaDirektorijuma.listFiles();
+
+        if (files != null && putanjaDirektorijuma.isDirectory()) {
+            for (File fajl : files) {
+                if (fajl.isDirectory()) {
+                    obrisiFajloveUnutarDirektorijuma(fajl);
+                }
+                fajl.delete();
+            }
+        }
     }
 
     @Override
     public String toString(){
-        return "datum i vrijeme " + datumVrijeme.toLocalDate() + " " + datumVrijeme.toLocalTime() + ", " +
-                "ime korisnika " + imeKorisnika + ", " + "ID prevoznog sredstva" + prevoznoSredstvo.getJedinstveniIdentifikator() + ", " +
-                "pocetna Lokacija " + pocetnaLokacija + ", " + "krajnja lokacija " + krajnjaLokacija + ", " +
-                "trajanje voznje u sek " + trajanjeVoznjeSekunde + ", " + "desio se kvar " + desioSeKvar + ", " +
-                "ima promociju " + imaPromociju;
+        String kvarIspis = (desioSeKvar) ? "desio se kvar" : "nije se desio kvar";
+        String promocijaIspis = (imaPromociju) ? "ima promociju" : "nema promociju";
+        String popustIspis = (imaPopust) ? "ima popust" : "nema popust";
+
+        return "Iznajmljivanje: \n\t" + "datum i vrijeme: " + datumVrijeme.toLocalDate() + " " + datumVrijeme.toLocalTime() + ", " +
+                "korisnik: " + korisnik.getImeKorisnika() +  ", " + "ID prevoznog sredstva: " + prevoznoSredstvo.getJedinstveniIdentifikator() + ",\n" +
+                "\tpocetna Lokacija " + pocetnaLokacija + ", " + "krajnja lokacija " + krajnjaLokacija + ", " +
+                "trajanje voznje u sek " + trajanjeVoznjeSekunde + ", " + kvarIspis + ", " + promocijaIspis + ", " + popustIspis
+                + ", rb: " + redniBrojIznajmljivanja;
 
     }
 
     @Override
     public void run() {
+
+        synchronized (lock) {
+            brojacIznajmljivanja++;
+            this.redniBrojIznajmljivanja = brojacIznajmljivanja;
+        }
 
         int udaljenostKretanja = Math.abs(krajnjaLokacija.getKoordinataX() - pocetnaLokacija.getKoordinataX()) +
                 Math.abs(krajnjaLokacija.getKoordinataY() - pocetnaLokacija.getKoordinataY());
@@ -220,7 +303,8 @@ public class Iznajmljivanje extends Thread {
             }
 
             try {
-                Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
+                Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 10)); // radi brzeg izvrsavanja
+                //Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -229,29 +313,9 @@ public class Iznajmljivanje extends Thread {
 
         System.out.println("=> Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " je stiglo na odrediste.");
 
+        generisiRacun();
         synchronized (lockPutanjaRacuna) {
-            File trenutnaPutanja = new File(System.getProperty("user.dir"));
-            File putanjaFolderaZaRacune = new File(trenutnaPutanja + File.separator + NAZIV_FOLDERA_SA_RACUNIMA);
-            if(!putanjaFolderaZaRacune.exists()) {
-                putanjaFolderaZaRacune.mkdir();
-            }
-
-            //String imeFajla = this.redniBrojIznajmljivanja + "_" + this.datumVrijeme;
-            String imeFajla = String.valueOf(this.redniBrojIznajmljivanja);
-            File putanjaFajlaRacuna = new File(putanjaFolderaZaRacune + File.separator + imeFajla);
-            try {
-                PrintWriter pisacFajla = new PrintWriter(new FileWriter(putanjaFajlaRacuna));
-                this.generisiRacun();
-                pisacFajla.println("Iznajmljivanje " + redniBrojIznajmljivanja + " datum i vrijeme " + datumVrijeme +
-                        " \n\tvrijednost racuna: " + racunZaPlacanje.getUkupnoZaPlacanje() );
-                pisacFajla.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-
-            }
-
-
+            upisiRacun();
         }
     }
 
