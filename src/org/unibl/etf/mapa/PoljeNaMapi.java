@@ -47,11 +47,11 @@ public class PoljeNaMapi {
     public String toString() {
         return "(" + koordinataX + ", " + koordinataY + ")";
     }
-////    mozda mi i ne treba
-//    @Override
-//    public boolean equals(Object obj) {
-//        PoljeNaMapi polje = (PoljeNaMapi)obj;
-//        return(this.getKoordinataX() == polje.getKoordinataX() && this.getKoordinataY() == this.getKoordinataY());
-//    }
+//    mozda mi i ne treba
+    @Override
+    public boolean equals(Object obj) {
+        PoljeNaMapi polje = (PoljeNaMapi)obj;
+        return(this.getKoordinataX() == polje.getKoordinataX() && this.getKoordinataY() == polje.getKoordinataY());
+    }
 }
 

@@ -14,9 +14,7 @@ public class Simulacija {
 
     public static void main(String[] args) {
 
-//        EMobilityCompany eMobilityCompany = EMobilityCompany.getInstanca();
-//        Mapa mapa = new Mapa();
-//        eMobilityCompany.obaviIznajmljivanja();
+
 //
 //        for(Iznajmljivanje i : eMobilityCompany.izvrsenaIznajmljivanja) {
 //            System.out.println(i);
@@ -30,6 +28,10 @@ public class Simulacija {
             grafickiPrikaz.setVisible(true);
             grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         });
+
+        EMobilityCompany eMobilityCompany = EMobilityCompany.getInstanca();
+        Mapa mapa = new Mapa();
+        eMobilityCompany.obaviIznajmljivanja();
 
 
     }

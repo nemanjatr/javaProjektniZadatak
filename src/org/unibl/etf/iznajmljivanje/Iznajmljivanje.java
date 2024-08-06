@@ -4,11 +4,13 @@ import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
 import org.unibl.etf.korisnik.Korisnik;
 import org.unibl.etf.mapa.Mapa;
 import org.unibl.etf.mapa.PoljeNaMapi;
+import org.unibl.etf.simulacija.Simulacija;
 import org.unibl.etf.vozila.ElektricniAutomobil;
 import org.unibl.etf.vozila.ElektricniBicikl;
 import org.unibl.etf.vozila.ElektricniTrotinet;
 import org.unibl.etf.vozila.PrevoznoSredstvo;
 
+import javax.swing.*;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -249,10 +251,31 @@ public class Iznajmljivanje extends Thread {
         double trajanjeZadrzavanjaNaPoljuSekunde = (double) trajanjeVoznjeSekunde / udaljenostKretanja;
 
 
-        System.out.println("Iznajmljivanje " + redniBrojIznajmljivanja + ", vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator());
-        System.out.println("=> Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " se nalazi na pocetnoj lokaciji " + pocetnaLokacija);
+        //System.out.println("Iznajmljivanje " + redniBrojIznajmljivanja + ", vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator());
+        //System.out.println("=> Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " se nalazi na pocetnoj lokaciji " + pocetnaLokacija);
+
+        // prikaz na pocetku
+        PoljeNaMapi finalPocetnaLokacija = pocetnaLokacija;
+        String prikazTeksaNaStartu = "<html>" + prevoznoSredstvo.getJedinstveniIdentifikator() + "_" +
+                pocetnaLokacija + "<br>" + "START";
+        //System.out.println(prikazTeksaNaStartu);
+        SwingUtilities.invokeLater(() -> Simulacija.grafickiPrikaz.
+                prikaziNaMapi(finalPocetnaLokacija, prikazTeksaNaStartu));
+        try {
+            Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 5000)); // radi brzeg izvrsavanja
+            //Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        SwingUtilities.invokeLater(() -> Simulacija.grafickiPrikaz.ukloniSaMape(finalPocetnaLokacija));
+
+
+        //
+
+
+
+
         PoljeNaMapi trenutnaLokacija = pocetnaLokacija;
-        //pocetnaLokacija.setZauzeto();
 
         int i = pocetnaLokacija.getKoordinataX();
         int j = pocetnaLokacija.getKoordinataY();
@@ -276,8 +299,9 @@ public class Iznajmljivanje extends Thread {
         }
 
 
-        while (trenutnaLokacija.getKoordinataX() !=  krajnjaLokacija.getKoordinataX()
-                || trenutnaLokacija.getKoordinataY() != krajnjaLokacija.getKoordinataY()) {
+//        while (trenutnaLokacija.getKoordinataX() !=  krajnjaLokacija.getKoordinataX()
+//                || trenutnaLokacija.getKoordinataY() != krajnjaLokacija.getKoordinataY()) {
+        while (!trenutnaLokacija.equals(krajnjaLokacija)) {
 
             synchronized (lock) {
 
@@ -302,16 +326,32 @@ public class Iznajmljivanje extends Thread {
                 trenutnaLokacija = Mapa.mapa[i][j];
             }
 
+            PoljeNaMapi finalTrenutnaLokacija = trenutnaLokacija;
+            String tekstZaIspis = "<html>" + prevoznoSredstvo.getJedinstveniIdentifikator() + trenutnaLokacija;
+            if(finalTrenutnaLokacija.equals(krajnjaLokacija)) {
+                tekstZaIspis += "<br>" + "KRAJ";
+
+            }
+
+            final String tekstZaLambu = tekstZaIspis;
+            SwingUtilities.invokeLater(() -> Simulacija.grafickiPrikaz.
+                    prikaziNaMapi(finalTrenutnaLokacija, tekstZaLambu));
+
             try {
-                Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 10)); // radi brzeg izvrsavanja
+                Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 5000)); // radi brzeg izvrsavanja
                 //Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            System.out.println("  *** Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " se nalazi na lokaciji " + trenutnaLokacija);
+
+            SwingUtilities.invokeLater(() -> Simulacija.grafickiPrikaz.
+                    ukloniSaMape(finalTrenutnaLokacija));
+
+
+            //System.out.println("  *** Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " se nalazi na lokaciji " + trenutnaLokacija);
         }
 
-        System.out.println("=> Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " je stiglo na odrediste.");
+        //System.out.println("=> Vozilo " + prevoznoSredstvo.getJedinstveniIdentifikator() + " je stiglo na odrediste.");
 
         generisiRacun();
         synchronized (lockPutanjaRacuna) {

@@ -105,7 +105,7 @@ public class EMobilityCompany {
     public void ucitajIznajmljivanjaIzFajla() {
 
         try {
-            File fajlPutanjaZaIznajmljivanja = new File("iznajmljivanja.csv"); // vjerovatno treba biti static final clan
+            File fajlPutanjaZaIznajmljivanja = new File("iznajmljivanja_3.csv"); // vjerovatno treba biti static final clan
             BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja));
 
             String linijaFajla;
@@ -249,7 +249,7 @@ public class EMobilityCompany {
 
             System.out.println("------------------------------------");
             try {
-                Thread.sleep(50);   // treba biti 5000
+                Thread.sleep(5000);   // treba biti 5000
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

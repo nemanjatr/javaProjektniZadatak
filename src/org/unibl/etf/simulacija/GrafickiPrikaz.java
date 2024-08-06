@@ -1,5 +1,7 @@
 package org.unibl.etf.simulacija;
 
+import org.unibl.etf.mapa.PoljeNaMapi;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
@@ -13,6 +15,10 @@ public class GrafickiPrikaz extends JFrame {
     private JPanel panelZaMeni;
     private JPanel panelZaMapu;
 
+    private JButton tasterPrevoznaSredstva;
+    private JButton tasterKvarovi;
+    private JButton tasterRezultatiPoslovanja;
+
     private JLabel[][] prostorZaKretanje;
 
     public GrafickiPrikaz() {
@@ -24,14 +30,36 @@ public class GrafickiPrikaz extends JFrame {
         // panel za meni
         panelZaMeni = new JPanel();
         panelZaMeni.setBorder(new LineBorder(Color.BLACK, 3));
-        JButton taster = new JButton("test");
-        taster.addActionListener(new ActionListener() {
+
+        tasterPrevoznaSredstva = new JButton("Prevozna Sredstva");
+        tasterPrevoznaSredstva.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(GrafickiPrikaz.this, "Test");
+                prikazPrevoznihSredstava();
             }
         });
-        panelZaMeni.add(taster);
+        panelZaMeni.add(tasterPrevoznaSredstva);
+
+        tasterKvarovi = new JButton("Kvarovi");
+        tasterKvarovi.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                prikazKvarova();
+            }
+        });
+        panelZaMeni.add(tasterKvarovi);
+
+        tasterRezultatiPoslovanja = new JButton("Rezultati poslovanja");
+        tasterRezultatiPoslovanja.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                prikazRezultataPoslovanja();
+            }
+        });
+        panelZaMeni.add(tasterRezultatiPoslovanja);
+
+
+
 
 
 
@@ -58,49 +86,81 @@ public class GrafickiPrikaz extends JFrame {
         }
 
         // Wrap the grid panel in another panel to center it
-        JPanel centeringPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        centeringPanel.add(panelZaMapu);
-
-        // Set a fixed size for the grid panel
-        panelZaMapu.setPreferredSize(new Dimension(1000, 1000));
+//        JPanel centeringPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+//        centeringPanel.add(panelZaMapu);
+//
+//        // Set a fixed size for the grid panel
+//        panelZaMapu.setPreferredSize(new Dimension(1000, 1000));
 
 
 
         // dodaj na prozor
         getContentPane().add(panelZaMeni, BorderLayout.NORTH);
-        getContentPane().add(centeringPanel, BorderLayout.CENTER);
+        //getContentPane().add(centeringPanel, BorderLayout.CENTER);
+        getContentPane().add(panelZaMapu, BorderLayout.CENTER);
         pack();
 
     }
 
-    void kreirajDugme(String naziv, Runnable r){
-        JButton button = new JButton(naziv);
-        button.addActionListener(e -> r.run());
-        button.setHorizontalAlignment(SwingConstants.CENTER);
-        button.setVerticalAlignment(SwingConstants.CENTER);
-        panelZaMeni.add(button);
+    public void prikaziNaMapi(PoljeNaMapi poljeZaPrikaz, String tekstZaIspis) {
+        int i = poljeZaPrikaz.getKoordinataX();
+        int j = poljeZaPrikaz.getKoordinataY();
+
+        if(prostorZaKretanje[i][j].getText() == null) {
+            System.out.println("1 " + tekstZaIspis);
+        } else if(prostorZaKretanje[i][j].getText().equals("")) {
+            System.out.println("2 " + tekstZaIspis);
+        } else if(!prostorZaKretanje[i][j].getText().isEmpty()){
+            System.out.println("3 " + tekstZaIspis);
+        } else {
+            System.out.println("4 " + tekstZaIspis);
+        }
+        //prostorZaKretanje[i][j].setText(tekstZaIspis);
+
+        if(!(prostorZaKretanje[i][j].getText().isEmpty())) {
+            String tekstDvaReda = prostorZaKretanje[i][j].getText() + "<br>" + tekstZaIspis;
+            prostorZaKretanje[i][j].setText(tekstDvaReda);
+            System.out.println(tekstDvaReda);
+            System.out.println("************** PORUKA " + tekstZaIspis );
+        } else {
+            prostorZaKretanje[i][j].setText(tekstZaIspis);
+        }
+
 
     }
 
-    synchronized void prikazAutomobila() {
+    public void ukloniSaMape(PoljeNaMapi poljeZaUklanjanje) {
+        int i = poljeZaUklanjanje.getKoordinataX();
+        int j = poljeZaUklanjanje.getKoordinataY();
+        prostorZaKretanje[i][j].setText("");
+    }
+
+    void prikazPrevoznihSredstava() {
         EventQueue.invokeLater(() -> {
-            JFrame jf = new JFrame("Automobili");
-            String[] kolone = {"ID","Proizvodjac","Model","Datum nabavke","Cijena nabavke",
-                    "Opis"};
-            String[][] podaci = new String[6][6];
-            DefaultTableModel tableModel = new DefaultTableModel(podaci,kolone) {
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
+            JFrame prozorPrevoznihSredstava = new JFrame("Sva prevozna sredstva");
+            prozorPrevoznihSredstava.setSize(400, 200);
+            prozorPrevoznihSredstava.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            prozorPrevoznihSredstava.setVisible(true);
+
         });
     }
 
-    synchronized void prikazBicikala() {
+    void prikazKvarova() {
         EventQueue.invokeLater(() -> {
-            JFrame jf = new JFrame("Bicikl");
+            JFrame prozorKvarova = new JFrame("Svi kvarovi");
+            prozorKvarova.setSize(400, 200);
+            prozorKvarova.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            prozorKvarova.setVisible(true);
 
+        });
+    }
+
+    void prikazRezultataPoslovanja() {
+        EventQueue.invokeLater(() -> {
+            JFrame prozorPoslovanja = new JFrame("Rezultati poslovanja");
+            prozorPoslovanja.setSize(400, 200);
+            prozorPoslovanja.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            prozorPoslovanja.setVisible(true);
         });
     }
 

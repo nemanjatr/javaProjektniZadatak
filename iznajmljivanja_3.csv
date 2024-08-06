@@ -1,0 +1,5 @@
+Datum,Korisnik,ID prevoznog sredstva,Pocetna lokacija,Odrediste,Trajanje,Kvar,Promocija
+1.6.2024 09:00,K1,T1,"2,2","2,10",10,ne,da
+1.6.2024 09:00,K2,A1,"0,1","10,8",10,ne,ne
+2.6.2024 09:00,K1,A1,"5,5","11,5",2,da,ne
+1.6.2024 09:00,K3,B1,"1,1","7,8",10,ne,ne
