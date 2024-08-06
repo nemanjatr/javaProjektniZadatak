@@ -2,6 +2,7 @@ package org.unibl.etf.vozila;
 
 import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
 
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,5 +27,13 @@ public class ElektricniAutomobil extends PrevoznoSredstvo {
             throw  new PogresniUlazniPodaciException();
         }
         this.opis = opis;
+    }
+
+    public Date getDatumNabavke() {
+        return datumNabavke;
+    }
+
+    public String getOpis() {
+        return opis;
     }
 }

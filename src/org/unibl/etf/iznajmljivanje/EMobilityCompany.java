@@ -29,15 +29,15 @@ public class EMobilityCompany {
     }
     /*************************************************/
 
-    private HashMap<String, PrevoznoSredstvo> prevoznaSredstva = new HashMap<>();
+    // samo privremeno public
+    public HashMap<String, PrevoznoSredstvo> prevoznaSredstva = new HashMap<>();
     private ArrayList<Iznajmljivanje> iznajmljivanja = new ArrayList<>();
     public ArrayList<Iznajmljivanje> izvrsenaIznajmljivanja = new ArrayList<>();
 
 
 
-    public ArrayList<PrevoznoSredstvo> getPrevoznaSredstva() {
-        ArrayList<PrevoznoSredstvo> listaPrevoznihSredstava = new ArrayList<>(prevoznaSredstva.values());
-        return listaPrevoznihSredstava;
+    public HashMap<String, PrevoznoSredstvo> getPrevoznaSredstva() {
+        return prevoznaSredstva;
     }
 
     public ArrayList<Iznajmljivanje> getIznajmljivanja() {
@@ -105,7 +105,7 @@ public class EMobilityCompany {
     public void ucitajIznajmljivanjaIzFajla() {
 
         try {
-            File fajlPutanjaZaIznajmljivanja = new File("iznajmljivanja_3.csv"); // vjerovatno treba biti static final clan
+            File fajlPutanjaZaIznajmljivanja = new File("iznajmljivanja.csv"); // vjerovatno treba biti static final clan
             BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja));
 
             String linijaFajla;

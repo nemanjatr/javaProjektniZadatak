@@ -23,14 +23,18 @@ public class Simulacija {
 //        //eMobilityCompany.prikazSumarnogIzvjestaja();
 //        eMobilityCompany.prikazDnevnihIzvjestaja();
 
+        EMobilityCompany eMobilityCompany = EMobilityCompany.getInstanca();
+        Mapa mapa = new Mapa();
+
+
         SwingUtilities.invokeLater(() -> {
-            grafickiPrikaz = new GrafickiPrikaz();
+            grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva());
             grafickiPrikaz.setVisible(true);
             grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         });
 
-        EMobilityCompany eMobilityCompany = EMobilityCompany.getInstanca();
-        Mapa mapa = new Mapa();
+
+
         eMobilityCompany.obaviIznajmljivanja();
 
 
