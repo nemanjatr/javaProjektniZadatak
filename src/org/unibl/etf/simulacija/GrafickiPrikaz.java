@@ -2,6 +2,8 @@ package org.unibl.etf.simulacija;
 
 import org.unibl.etf.mapa.PoljeNaMapi;
 import org.unibl.etf.vozila.ElektricniAutomobil;
+import org.unibl.etf.vozila.ElektricniBicikl;
+import org.unibl.etf.vozila.ElektricniTrotinet;
 import org.unibl.etf.vozila.PrevoznoSredstvo;
 
 import javax.swing.*;
@@ -13,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 
 public class GrafickiPrikaz extends JFrame {
 
@@ -233,35 +234,25 @@ public class GrafickiPrikaz extends JFrame {
             panelZaTabele.setLayout(new BoxLayout(panelZaTabele, BoxLayout.Y_AXIS));
 
             /* Automobili */
-            List<PrevoznoSredstvo> temp = svaPrevoznaSredstva.values().stream().filter(e ->
-                    e instanceof ElektricniAutomobil).toList();
+            List<ElektricniAutomobil> listaAutomobil = svaPrevoznaSredstva.values().stream().filter(e ->
+                    e instanceof ElektricniAutomobil).map(e -> (ElektricniAutomobil) e).toList();
 
-            String[][] podaciAutomobila = new String[temp.size()][6];
-            for(int i = 0;i<temp.size();i++) {
-                ElektricniAutomobil trenutniAutomobil = (ElektricniAutomobil) temp.get(i);
-                podaciAutomobila[i] = new String[]{trenutniAutomobil.getJedinstveniIdentifikator(),
-                        trenutniAutomobil.getProizvodjac(), trenutniAutomobil.getModel(),
-                        trenutniAutomobil.getDatumNabavke().toString(),
-                        String.valueOf(trenutniAutomobil.getCijenaNabavke()),
-                        trenutniAutomobil.getOpis()};
-            }
-            String[] kolone = {"ID","Proizvodjac","Model","Datum nabavke","Cijena nabavke",
+            String[][] podaciTabeleAutomobil = listaAutomobil.stream()
+                    .map(automobil -> new String[] {
+                            automobil.getJedinstveniIdentifikator(),
+                            automobil.getProizvodjac(),
+                            automobil.getModel(),
+                            String.valueOf(automobil.getDatumNabavke()),
+                            String.valueOf(automobil.getCijenaNabavke()),
+                            automobil.getOpis()
+                    })
+                    .toArray(size -> new String[size][]);
+
+            String[] koloneTabeleAutomobil = {"ID","Proizvodjac","Model","Datum nabavke","Cijena nabavke",
                     "Opis"};
 
 
-            String[][] podaci = {
-                    {"B1", "1.5.2024", "B", "BM1", "50000", "opis1"},
-                    {"B2", "1.5.2024", "B", "BM2", "35000", "opis1"},
-                    {"B3", "1.5.2024", "B", "BM2","35000", "opis1"},
-                    {"B4", "1.5.2024", "B", "M3","13000", "opis1"},
-                    {"B5", "1.5.2024", "B", "M1","15450", "opis1"},
-
-
-            };
-
-
-
-            DefaultTableModel modelTabeleAutomobila = new DefaultTableModel(podaciAutomobila, kolone);
+            DefaultTableModel modelTabeleAutomobila = new DefaultTableModel(podaciTabeleAutomobil, koloneTabeleAutomobil);
             JTable tabelaAutomobila = new JTable(modelTabeleAutomobila);
             tabelaAutomobila.setBounds(30, 40, 200, 300);
             JScrollPane skrolAutomobili = new JScrollPane(tabelaAutomobila);
@@ -273,18 +264,23 @@ public class GrafickiPrikaz extends JFrame {
 
 
             /* Bicikli */
-            String[] koloneTabeleBicikala = {"ID", "Proizvodjac", "Model", "Cijena", "Domet"};
-            String[][] podaciBicikli = {
-                    {"B1", "B", "BM1", "50000", "100"},
-                    {"B2", "B", "BM2", "35000", "65"},
-                    {"B3", "B", "BM2","35000", "30"},
-                    {"B4", "B", "M3","13000", "70"},
-                    {"B5", "B", "M1","15450", "100"},
+            List<ElektricniBicikl> listaBicikl = svaPrevoznaSredstva.values().stream().filter(e ->
+                    e instanceof  ElektricniBicikl).map(e -> (ElektricniBicikl) e).toList();
+
+            String[] koloneTabeleBicikl = {"ID", "Proizvodjac", "Model", "Cijena", "Domet"};
+
+            String[][] podaciBicikli = listaBicikl.stream()
+                    .map(bicikl -> new String[] {
+                            bicikl.getJedinstveniIdentifikator(),
+                            bicikl.getProizvodjac(),
+                            bicikl.getModel(),
+                            String.valueOf(bicikl.getCijenaNabavke()),
+                            String.valueOf(bicikl.getDomet())
+                    })
+                    .toArray(size -> new String[size][]);
 
 
-            };
-
-            DefaultTableModel modelTabeleBicikala = new DefaultTableModel(podaciBicikli, koloneTabeleBicikala);
+            DefaultTableModel modelTabeleBicikala = new DefaultTableModel(podaciBicikli, koloneTabeleBicikl);
             JTable tabelaBicikala = new JTable(modelTabeleBicikala);
             tabelaBicikala.setBounds(30, 40, 200, 300);
             JScrollPane skrolBicikala = new JScrollPane(tabelaBicikala);
@@ -294,18 +290,22 @@ public class GrafickiPrikaz extends JFrame {
             panelZaTabele.add(skrolBicikala);
 
             /* Trotineti */
-            String[] koloneTabeleTrotineta = {"ID", "Proizvodjac", "Model", "Cijena", "Maks brzina"};
-            String[][] podaciTrotineti = {
-                    {"T1", "T", "TM1", "5000", "20"},
-                    {"T2", "T", "TM2", "3500", "35"},
-                    {"T3", "T", "TM2","3500", "30"},
-                    {"T4", "T", "TM3","1300", "70"},
-                    {"T5", "T", "TM1","1550", "30"},
 
+            List<ElektricniTrotinet> listaTrotinet = svaPrevoznaSredstva.values().stream().filter(e ->
+                    e instanceof ElektricniTrotinet).map(e -> (ElektricniTrotinet)e).toList();
 
-            };
+            String[] koloneTabeleTrotinet = {"ID", "Proizvodjac", "Model", "Cijena", "Maks brzina"};
+            String[][] podaciTabeleTrotinet = listaTrotinet.stream()
+                    .map(trotinet -> new String[] {
+                            trotinet.getJedinstveniIdentifikator(),
+                            trotinet.getProizvodjac(),
+                            trotinet.getModel(),
+                            String.valueOf(trotinet.getCijenaNabavke()),
+                            String.valueOf(trotinet.getMaksimalnaBrzina())
+                     })
+                    .toArray(size -> new String[size][]);
 
-            DefaultTableModel modelTabeleTrotineta = new DefaultTableModel(podaciTrotineti, koloneTabeleTrotineta);
+            DefaultTableModel modelTabeleTrotineta = new DefaultTableModel(podaciTabeleTrotinet, koloneTabeleTrotinet);
             JTable tabelaTrotineta = new JTable(modelTabeleTrotineta);
             tabelaTrotineta.setBounds(30, 40, 200, 300);
             JScrollPane skrolTrotineta = new JScrollPane(tabelaTrotineta);
@@ -316,7 +316,7 @@ public class GrafickiPrikaz extends JFrame {
 
 
             prozorPrevoznihSredstava.add(panelZaTabele);
-            prozorPrevoznihSredstava.setSize(700, 450);
+            prozorPrevoznihSredstava.setSize(700, 650);
             prozorPrevoznihSredstava.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             prozorPrevoznihSredstava.setVisible(true);
 

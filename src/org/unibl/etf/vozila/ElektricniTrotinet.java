@@ -15,5 +15,9 @@ public class ElektricniTrotinet extends PrevoznoSredstvo {
         }
     }
 
+    public int getMaksimalnaBrzina() {
+        return maksimalnaBrzina;
+    }
+
 
 }

@@ -15,4 +15,8 @@ public class ElektricniBicikl extends PrevoznoSredstvo {
         }
 
     }
+
+    public int getDomet() {
+        return domet;
+    }
 }

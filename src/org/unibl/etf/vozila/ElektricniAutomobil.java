@@ -5,21 +5,24 @@ import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class ElektricniAutomobil extends PrevoznoSredstvo {
 
-    private Date datumNabavke;
+    private LocalDate datumNabavke;
     private String opis;
 
     public ElektricniAutomobil(String jedinstveniIdentifikator, String cijenaNabavke, String proizvodjac, String model,
                                String datumNabavke, String opis) throws PogresniUlazniPodaciException {
 
         super(jedinstveniIdentifikator, cijenaNabavke, proizvodjac, model);
-        SimpleDateFormat formatDatuma = new SimpleDateFormat("d.M.yyyy.");
+        DateTimeFormatter formater = DateTimeFormatter.ofPattern("d.M.yyyy.");
         try {
-                this.datumNabavke = formatDatuma.parse(datumNabavke);
-        } catch (ParseException e) {
+            this.datumNabavke = LocalDate.parse(datumNabavke, formater);
+        } catch (DateTimeException e) {
             System.out.println("Greska pri parsiranju datuma nabavke vozila " + jedinstveniIdentifikator);
             throw new PogresniUlazniPodaciException();
         }
@@ -29,7 +32,7 @@ public class ElektricniAutomobil extends PrevoznoSredstvo {
         this.opis = opis;
     }
 
-    public Date getDatumNabavke() {
+    public LocalDate getDatumNabavke() {
         return datumNabavke;
     }
 
