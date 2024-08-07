@@ -15,6 +15,10 @@ import java.util.stream.Collectors;
 
 public class EMobilityCompany {
 
+    private static final String AUTOMOBIL = "automobil";
+    private static final String BICIKL = "bicikl";
+    private static final String TROTINET = "trotinet";
+
     /* singleton pattern */
     private static EMobilityCompany instanca;
     private EMobilityCompany() {
@@ -30,9 +34,10 @@ public class EMobilityCompany {
     /*************************************************/
 
     // samo privremeno public
-    public HashMap<String, PrevoznoSredstvo> prevoznaSredstva = new HashMap<>();
+    private HashMap<String, PrevoznoSredstvo> prevoznaSredstva = new HashMap<>();
     private ArrayList<Iznajmljivanje> iznajmljivanja = new ArrayList<>();
-    public ArrayList<Iznajmljivanje> izvrsenaIznajmljivanja = new ArrayList<>();
+    private ArrayList<Iznajmljivanje> izvrsenaIznajmljivanja = new ArrayList<>();
+    private ArrayList<Kvar> iznajmljivanjaSaKvarom = new ArrayList<>();
 
 
 
@@ -46,6 +51,10 @@ public class EMobilityCompany {
 
     public ArrayList<Iznajmljivanje> getIzvrsenaIznajmljivanja() {
         return izvrsenaIznajmljivanja;
+    }
+
+    public ArrayList<Kvar> getIznajmljivanjaSaKvarom() {
+        return iznajmljivanjaSaKvarom;
     }
 
     public void ucitajPrevoznaSredstvaIzFajla() {
@@ -80,13 +89,13 @@ public class EMobilityCompany {
                     }
 
                     if(!prevoznaSredstva.containsKey(jedinstveniIdenitifikator)) {
-                        if('A' == jedinstveniIdenitifikator.charAt(0)){
+                        if(AUTOMOBIL.equals(vrsta)){
                             prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniAutomobil(jedinstveniIdenitifikator, cijena,
                                     proizvodjac, model, datumNabavke, opis));
-                        } else if('B' == jedinstveniIdenitifikator.charAt(0)){
+                        } else if(BICIKL.equals(vrsta)){
                             prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniBicikl(jedinstveniIdenitifikator, cijena,
                                     proizvodjac, model, domet));
-                        } else if('T' == jedinstveniIdenitifikator.charAt(0)){
+                        } else if(TROTINET.equals(vrsta)){
                             prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniTrotinet(jedinstveniIdenitifikator, cijena,
                                     proizvodjac, model, maksimalnaBrzina));
                         }
@@ -141,18 +150,12 @@ public class EMobilityCompany {
 
                             String datumVrijeme = karakteristikeIznajmljivanja.get(0);
                             String imeKorisnika = karakteristikeIznajmljivanja.get(1);
-
-                            String identifikatorPrevoznogSredstva = karakteristikeIznajmljivanja.get(2); // ne salje se u konstruktor Iznajmljivanja
-                            // jer u tekstu zadatka nije navedeno da se ovaj podataka tu treba cuvati??
-                            // !update ->  ipak, na kraju, saljem u konstruktor je mi treba u klasi Iznajmljivanje
-
+                            String identifikatorPrevoznogSredstva = karakteristikeIznajmljivanja.get(2);
                             PrevoznoSredstvo prevoznoSredstvo = prevoznaSredstva.get(identifikatorPrevoznogSredstva);
                             if(prevoznoSredstvo == null) {
                                 throw new PrevoznoSredstvoNePostojiException("Prevozno sredstvo " +
                                         identifikatorPrevoznogSredstva + " nije moguce iznajmiti, jer ne postoji");
                             }
-
-
                             String pocetnaLokacija = karakteristikeIznajmljivanja.get(3);
                             String krajnjaLokacija = karakteristikeIznajmljivanja.get(4);
                             String trajanjeVoznjeSekunde = karakteristikeIznajmljivanja.get(5);
@@ -162,16 +165,14 @@ public class EMobilityCompany {
                             try {
                                 iznajmljivanja.add(new Iznajmljivanje(datumVrijeme, imeKorisnika, prevoznoSredstvo,
                                         pocetnaLokacija, krajnjaLokacija, trajanjeVoznjeSekunde, kvar, promocija));
+
                             } catch (PogresniUlazniPodaciException e) {
 
                             }
-
                         }
-
                     } catch (NedovoljnoUlaznihPodatakaException e) {
 
                     }
-
                 } catch (PrevoznoSredstvoNePostojiException e) {
 
                 }
@@ -231,16 +232,33 @@ public class EMobilityCompany {
 
             Map<PrevoznoSredstvo, Integer> brojPonavljanjaUListi = new HashMap<>();
 
-            for(Iznajmljivanje i : podlista) {
-                if(brojPonavljanjaUListi.containsKey(i.getPrevoznoSredstvo())) {
-                    brojPonavljanjaUListi.put(i.getPrevoznoSredstvo(), brojPonavljanjaUListi.get(i.getPrevoznoSredstvo()) + 1);
-                    System.out.println("Iznajmljivanje: (" + i + ") nije moguce, jer je vozilo vec iznajmljeno");
+            for(Iznajmljivanje iznajmljivanje : podlista) {
+                if(brojPonavljanjaUListi.containsKey(iznajmljivanje.getPrevoznoSredstvo())) {
+                    brojPonavljanjaUListi.put(iznajmljivanje.getPrevoznoSredstvo(), brojPonavljanjaUListi.get(iznajmljivanje.getPrevoznoSredstvo()) + 1);
+                    System.out.println("Iznajmljivanje: (" + iznajmljivanje + ") nije moguce, jer je vozilo vec iznajmljeno");
                 } else {
-                    brojPonavljanjaUListi.put(i.getPrevoznoSredstvo(), 1);
-                    izvrsenaIznajmljivanja.add(i);
-                    i.start();
-                }
+                    brojPonavljanjaUListi.put(iznajmljivanje.getPrevoznoSredstvo(), 1);
+                    izvrsenaIznajmljivanja.add(iznajmljivanje);
 
+                    if(iznajmljivanje.isDesioSeKvar()) {
+                        String vrstaPrevoznogSredstvaSaKvarom;
+                        if(iznajmljivanje.getPrevoznoSredstvo() instanceof ElektricniAutomobil) {
+                            vrstaPrevoznogSredstvaSaKvarom = AUTOMOBIL;
+                        } else if(iznajmljivanje.getPrevoznoSredstvo() instanceof ElektricniBicikl) {
+                            vrstaPrevoznogSredstvaSaKvarom = BICIKL;
+                        } else if(iznajmljivanje.getPrevoznoSredstvo() instanceof ElektricniTrotinet) {
+                            vrstaPrevoznogSredstvaSaKvarom = TROTINET;
+                        } else {
+                            vrstaPrevoznogSredstvaSaKvarom = "Nepoznato prevozno sredstvo";
+                        }
+
+                        iznajmljivanjaSaKvarom.add(new Kvar(vrstaPrevoznogSredstvaSaKvarom,
+                                    iznajmljivanje.getPrevoznoSredstvo().getJedinstveniIdentifikator(),
+                                    iznajmljivanje.getDatumVrijeme(), "opis kvara"));
+                    }
+
+                    iznajmljivanje.start();
+                }
             }
 
             try {

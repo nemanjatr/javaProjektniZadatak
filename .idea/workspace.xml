@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="23ea5e2b-c4e9-40d7-9021-01cf72e7bbcb" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.~lock.iznajmljivanja.csv#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.~lock.iznajmljivanja_sorted.csv#" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Kvar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.~lock.iznajmljivanja.csv#" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/EMobilityCompany.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/EMobilityCompany.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/GrafickiPrikaz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/GrafickiPrikaz.java" afterDir="false" />

@@ -16,6 +16,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class Iznajmljivanje extends Thread {
@@ -49,6 +50,7 @@ public class Iznajmljivanje extends Thread {
     private static final Object lock = new Object();
     private static final Object lockPutanjaRacuna = new Object();
 
+    private ArrayList<Kvar> iznajmljivanjaSaKvarom = new ArrayList<>();
 
     static {
         properties = new Properties();
@@ -76,7 +78,7 @@ public class Iznajmljivanje extends Thread {
                           String krajnjaLokacija, String trajanjeVoznjeSekunde, String desioSeKvar, String imaPromociju) throws PogresniUlazniPodaciException {
 
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy H:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy HH:mm");
             this.datumVrijeme = LocalDateTime.parse(datumVrijeme.trim(), formatter);
             this.korisnik = new Korisnik(imeKorisnika);
             this.prevoznoSredstvo = prevoznoSredstvo;
