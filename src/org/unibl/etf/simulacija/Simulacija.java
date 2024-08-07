@@ -28,7 +28,7 @@ public class Simulacija {
 
 
         SwingUtilities.invokeLater(() -> {
-            grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva());
+            grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(), eMobilityCompany.getIzvrsenaIznajmljivanja());
             grafickiPrikaz.setVisible(true);
             grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         });

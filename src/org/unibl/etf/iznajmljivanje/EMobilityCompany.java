@@ -44,6 +44,10 @@ public class EMobilityCompany {
         return iznajmljivanja;
     }
 
+    public ArrayList<Iznajmljivanje> getIzvrsenaIznajmljivanja() {
+        return izvrsenaIznajmljivanja;
+    }
+
     public void ucitajPrevoznaSredstvaIzFajla() {
         try{
             File fajlPutanjaZaPrevoznaSredstva = new File("prevozna_sredstva.csv");
@@ -255,98 +259,4 @@ public class EMobilityCompany {
             }
         }
     }
-
-
-    public void prikazDnevnihIzvjestaja() {
-
-        Map<LocalDateTime, List<Iznajmljivanje>> grupisanoPoDatumVrijeme =
-                izvrsenaIznajmljivanja.stream().collect(Collectors.groupingBy(Iznajmljivanje::getDatumVrijeme));
-
-        Map<LocalDateTime, List<Iznajmljivanje>> sortiranaMapa = new TreeMap<>(grupisanoPoDatumVrijeme);
-
-        ArrayList<ArrayList<Iznajmljivanje>> listaIznajmljivanjaPoDatumVrijeme = new ArrayList<>();
-        for(List<Iznajmljivanje> grupa : sortiranaMapa.values()) {
-            listaIznajmljivanjaPoDatumVrijeme.add(new ArrayList<>(grupa));
-        }
-        // duplirani kod iz metode obaviIznajmljivanja()
-        // treba nekako rijesiti
-
-        for(ArrayList<Iznajmljivanje> listaPoDatumu : listaIznajmljivanjaPoDatumVrijeme) {
-            double ukupanPrihod = 0.0;
-            double ukupanPopust = 0.0;
-            double ukupnoPromocije = 0.0;
-            double ukupanIznosSvihVoznji = 0.0;
-            double ukupanIznosOdrzavanja = 0.0;
-            double ukupanIznosPopravkeKvarova = 0.0;
-
-            for(Iznajmljivanje i : listaPoDatumu) {
-                ukupanPrihod += i.getRacunZaPlacanje().getUkupnoZaPlacanje();
-                ukupanPopust += i.getRacunZaPlacanje().getIznosPopusta();
-                ukupnoPromocije += i.getRacunZaPlacanje().getIznosPromocije();
-                ukupanIznosSvihVoznji += i.getRacunZaPlacanje().getIznos();
-                if(i.getPrevoznoSredstvo() instanceof  ElektricniAutomobil) {
-                    ukupanIznosPopravkeKvarova += 0.7 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                } else if(i.getPrevoznoSredstvo() instanceof ElektricniBicikl) {
-                    ukupanIznosPopravkeKvarova += 0.4 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                } else if(i.getPrevoznoSredstvo() instanceof  ElektricniTrotinet) {
-                    ukupanIznosPopravkeKvarova += 0.2 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                } else {
-                    System.out.println("Greska u dnevnim izvjestajima");
-                }
-                ukupanIznosOdrzavanja = ukupanPrihod * 0.2;
-            }
-
-            System.out.println("\nDatum " + listaPoDatumu.get(0).getDatumVrijeme() +
-                    "\n\t" + "prihod: " + ukupanPrihod + "\n\tpopust: " + ukupanPopust + "\n\tpromocije: " + ukupnoPromocije +
-                    "\n\tiznos svih voznji: " + ukupanIznosSvihVoznji + "\n\todrzavanje: " + ukupanIznosOdrzavanja +
-                    "\n\tkvarovi: " + ukupanIznosPopravkeKvarova);
-        }
-    }
-
-    public void prikazSumarnogIzvjestaja() {
-        double ukupanPrihod = 0.0;
-        double ukupanPopust = 0.0;
-        double ukupnoPromocije = 0.0;
-        double ukupanIznosSvihVoznji = 0.0;
-        double ukupanIznosOdrzavanja = 0.0;
-        double ukupanIznosPopravkeKvarova = 0.0;
-        double ukupniTroskoviKompanije = 0.0;
-        double ukupanProfit = 0.0;
-        double ukupanPorez = 0.0;
-
-        for(Iznajmljivanje i : izvrsenaIznajmljivanja) {
-            ukupanPrihod += i.getRacunZaPlacanje().getUkupnoZaPlacanje();
-            ukupanPopust += i.getRacunZaPlacanje().getIznosPopusta();
-            ukupnoPromocije += i.getRacunZaPlacanje().getIznosPromocije();
-            ukupanIznosSvihVoznji += i.getRacunZaPlacanje().getIznos();
-            if(i.isDesioSeKvar()) {
-                if(i.getPrevoznoSredstvo() instanceof ElektricniAutomobil) {
-                    ukupanIznosPopravkeKvarova += 0.07 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                } else if(i.getPrevoznoSredstvo() instanceof ElektricniBicikl) {
-                    ukupanIznosPopravkeKvarova += 0.04 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                } else if(i.getPrevoznoSredstvo() instanceof ElektricniTrotinet) {
-                    ukupanIznosPopravkeKvarova += 0.02 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                } else {
-                    System.out.println("Greska sumarni izvjestaj!");
-                }
-
-            }
-
-        }
-
-        ukupanIznosOdrzavanja = ukupanPrihod * 0.2;
-        ukupniTroskoviKompanije = ukupanIznosOdrzavanja;
-        ukupanProfit = ukupanPrihod - ukupanIznosOdrzavanja - ukupanIznosPopravkeKvarova - ukupniTroskoviKompanije;
-        if(ukupanProfit > 0.0) {
-            ukupanPorez = ukupanProfit * 0.1;
-        }
-
-        System.out.println("Sumarni izvjestaj: " + "\n\tprihod: " + ukupanPrihod + "\n\tpopust: " + ukupanPopust +
-                "\n\tpromocije : " + ukupnoPromocije + "\n\tiznos : " + ukupanIznosSvihVoznji +"\n\todrzavanje: " + ukupanIznosOdrzavanja +
-                "\n\tpopravke: " + ukupanIznosPopravkeKvarova + "\n\ttroskovi: " + ukupniTroskoviKompanije + "\n\tporez: " + ukupanPorez);
-    }
-
-
-
-
 }

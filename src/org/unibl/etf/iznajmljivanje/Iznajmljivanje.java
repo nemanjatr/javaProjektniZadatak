@@ -13,6 +13,7 @@ import org.unibl.etf.vozila.PrevoznoSredstvo;
 
 import javax.swing.*;
 import java.io.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
@@ -103,6 +104,10 @@ public class Iznajmljivanje extends Thread {
 
     public LocalDateTime getDatumVrijeme() {
         return datumVrijeme;
+    }
+
+    public LocalDate getDatum() {
+        return datumVrijeme.toLocalDate();
     }
 
     public PrevoznoSredstvo getPrevoznoSredstvo() {
@@ -337,7 +342,7 @@ public class Iznajmljivanje extends Thread {
                     prikaziNaMapi(finalTrenutnaLokacija, tekstZaLambu));
 
             try {
-                Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 5000)); // radi brzeg izvrsavanja
+                Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 500)); // radi brzeg izvrsavanja
                 //Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
             } catch (InterruptedException e) {
                 e.printStackTrace();
