@@ -30,12 +30,22 @@ public class Simulacija {
         SwingUtilities.invokeLater(() -> {
             grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(),
                     eMobilityCompany.getIzvrsenaIznajmljivanja(),
-                    eMobilityCompany.getIznajmljivanjaSaKvarom());
+                    eMobilityCompany.getIznajmljivanjaSaKvarom(),
+                    eMobilityCompany.getVozilaSaNajvecimPrihodom());
             grafickiPrikaz.setVisible(true);
             grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         });
 
         eMobilityCompany.obaviIznajmljivanja();
+        eMobilityCompany.pronadjiVozilaSaNajvecimPrihodom();
+        eMobilityCompany.deserijalizujVozila();
+
+//        for(Iznajmljivanje i : eMobilityCompany.getIzvrsenaIznajmljivanja()) {
+//            System.out.println("Prihod " + i.getPrevoznoSredstvo().getJedinstveniIdentifikator()
+//                    + ": " + i.getRacunZaPlacanje().getUkupnoZaPlacanje());
+//        }
+
+
 
 
     }

@@ -3,7 +3,10 @@ package org.unibl.etf.vozila;
 import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
 import org.unibl.etf.izuzeci.PotrosenaBaterijeException;
 
-public class PrevoznoSredstvo {
+import java.io.Serializable;
+import java.util.Objects;
+
+public class PrevoznoSredstvo implements Serializable {
     protected String jedinstveniIdentifikator;
     protected double cijenaNabavke;
     protected String proizvodjac;
@@ -11,9 +14,10 @@ public class PrevoznoSredstvo {
     protected int trenutniNivoBaterije;
     protected static int POCETNI_NIVO_BATERIJE = 100;
 
+
     public PrevoznoSredstvo(String jedinstveniIdentifikator, String cijenaNabavke, String proizvodjac, String model) throws PogresniUlazniPodaciException {
 
-        if(jedinstveniIdentifikator.isEmpty() || proizvodjac.isEmpty() || model.isEmpty()) {
+        if (jedinstveniIdentifikator.isEmpty() || proizvodjac.isEmpty() || model.isEmpty()) {
             throw new PogresniUlazniPodaciException();
         }
         this.jedinstveniIdentifikator = jedinstveniIdentifikator;
@@ -50,7 +54,7 @@ public class PrevoznoSredstvo {
     }
 
     public void umanjiNivoBaterije() throws PotrosenaBaterijeException {
-        if(trenutniNivoBaterije > 0) {
+        if (trenutniNivoBaterije > 0) {
             this.trenutniNivoBaterije--;
         } else {
             throw new PotrosenaBaterijeException();
@@ -59,6 +63,18 @@ public class PrevoznoSredstvo {
 
     @Override
     public String toString() {
-        return jedinstveniIdentifikator;
+        return "Vozilo " + jedinstveniIdentifikator;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        PrevoznoSredstvo ps = (PrevoznoSredstvo) obj;
+        return Objects.equals(this.jedinstveniIdentifikator, ps.jedinstveniIdentifikator);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.jedinstveniIdentifikator);
+    }
+
 }

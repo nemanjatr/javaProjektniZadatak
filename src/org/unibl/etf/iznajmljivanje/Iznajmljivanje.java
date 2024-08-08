@@ -23,7 +23,7 @@ public class Iznajmljivanje extends Thread {
 
     private static final String PROPERTIES_PODACI_GRESKA = "Pogresni podaci unutar properties fajla!";
     private static final String PROPERTIES_UPOZORENJE = "Rezultati su mozda pogresni. Molimo provjerite vrijednosti unutar properties fajla!";
-    private static final Properties properties;
+    public static final Properties properties;
 
 
     private static int brojacIznajmljivanja = 0;
@@ -333,7 +333,7 @@ public class Iznajmljivanje extends Thread {
                     prikaziNaMapi(finalTrenutnaLokacija, tekstZaLambu));
 
             try {
-                Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 500)); // radi brzeg izvrsavanja
+                Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 100)); // radi brzeg izvrsavanja
                 //Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
             } catch (InterruptedException e) {
                 e.printStackTrace();

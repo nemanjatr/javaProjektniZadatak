@@ -45,6 +45,7 @@ public class EMobilityCompany {
     private ArrayList<Iznajmljivanje> iznajmljivanja = new ArrayList<>();
     private ArrayList<Iznajmljivanje> izvrsenaIznajmljivanja = new ArrayList<>();
     private ArrayList<Kvar> iznajmljivanjaSaKvarom = new ArrayList<>();
+    HashMap<PrevoznoSredstvo, Double> vozilaSaNajvecimPrihodom = new HashMap<>();
 
 
 
@@ -62,6 +63,10 @@ public class EMobilityCompany {
 
     public ArrayList<Kvar> getIznajmljivanjaSaKvarom() {
         return iznajmljivanjaSaKvarom;
+    }
+
+    public HashMap<PrevoznoSredstvo, Double> getVozilaSaNajvecimPrihodom() {
+        return vozilaSaNajvecimPrihodom;
     }
 
     public void ucitajPrevoznaSredstvaIzFajla() {
@@ -256,6 +261,120 @@ public class EMobilityCompany {
                 Thread.sleep(100);   // treba biti 5000
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public void pronadjiVozilaSaNajvecimPrihodom() {
+        String idAutomobila = "";
+        String idBicikla = "";
+        String idTrotineta = "";
+
+        double dosadasnjiPrihod = 0.0;
+
+        double najveciPrihodAutomobili = 0.0;
+        double najveciPrihodBicikli = 0.0;
+        double najveciPrihodTrotineti = 0.0;
+
+        HashMap<String, Double> prihodiPoAutomobilu = new HashMap<>();
+        HashMap<String, Double> prihodiPoBiciklu = new HashMap<>();
+        HashMap<String, Double> prihodiPoTrotinetu = new HashMap<>();
+
+
+
+        for(Iznajmljivanje iznajmljivanje : izvrsenaIznajmljivanja) {
+            PrevoznoSredstvo ps = iznajmljivanje.getPrevoznoSredstvo();
+            double trenutniPrihod = iznajmljivanje.getRacunZaPlacanje().getUkupnoZaPlacanje();
+
+            if(ps instanceof ElektricniAutomobil) {
+                if(prihodiPoAutomobilu.containsKey(ps.getJedinstveniIdentifikator())) {
+                    dosadasnjiPrihod = prihodiPoAutomobilu.get(ps.getJedinstveniIdentifikator());
+                    prihodiPoAutomobilu.put(ps.getJedinstveniIdentifikator(), dosadasnjiPrihod + trenutniPrihod);
+                } else {
+                    prihodiPoAutomobilu.put(ps.getJedinstveniIdentifikator(), trenutniPrihod);
+                }
+
+
+            } else if(ps instanceof  ElektricniBicikl) {
+
+               if(prihodiPoBiciklu.containsKey(ps.getJedinstveniIdentifikator())) {
+                    dosadasnjiPrihod = prihodiPoBiciklu.get(ps.getJedinstveniIdentifikator());
+                    prihodiPoBiciklu.put(ps.getJedinstveniIdentifikator(), dosadasnjiPrihod + trenutniPrihod);
+                } else {
+                    prihodiPoBiciklu.put(ps.getJedinstveniIdentifikator(), trenutniPrihod);
+                }
+
+            } else if(iznajmljivanje.getPrevoznoSredstvo() instanceof ElektricniTrotinet) {
+
+                if(prihodiPoTrotinetu.containsKey(ps.getJedinstveniIdentifikator())) {
+                    dosadasnjiPrihod = prihodiPoTrotinetu.get(ps.getJedinstveniIdentifikator());
+                    prihodiPoTrotinetu.put(ps.getJedinstveniIdentifikator(), dosadasnjiPrihod + trenutniPrihod);
+                } else {
+                    prihodiPoTrotinetu.put(ps.getJedinstveniIdentifikator(), trenutniPrihod);
+                }
+
+            } else {
+                System.out.println("Greska");
+            }
+        }
+
+
+        for(Map.Entry<String, Double> entry :  prihodiPoAutomobilu.entrySet()) {
+            if(entry.getValue() > najveciPrihodAutomobili) {
+                najveciPrihodAutomobili = entry.getValue();
+                idAutomobila = entry.getKey();
+            }
+        }
+
+        for(Map.Entry<String, Double> entry :  prihodiPoBiciklu.entrySet()) {
+            if(entry.getValue() > najveciPrihodBicikli) {
+                najveciPrihodBicikli = entry.getValue();
+                idBicikla = entry.getKey();
+            }
+        }
+
+
+        for(Map.Entry<String, Double> entry :  prihodiPoTrotinetu.entrySet()) {
+            if(entry.getValue() > najveciPrihodTrotineti) {
+                najveciPrihodTrotineti = entry.getValue();
+                idTrotineta = entry.getKey();
+            }
+        }
+
+        System.out.println("serijalizacija : " + idAutomobila + " " + najveciPrihodAutomobili + " " +
+                idBicikla + " " + najveciPrihodBicikli + " " +
+                idTrotineta + " " + najveciPrihodTrotineti);
+
+
+        vozilaSaNajvecimPrihodom.put(prevoznaSredstva.get(idAutomobila), najveciPrihodAutomobili);
+        vozilaSaNajvecimPrihodom.put(prevoznaSredstva.get(idBicikla), najveciPrihodBicikli);
+        vozilaSaNajvecimPrihodom.put(prevoznaSredstva.get(idTrotineta), najveciPrihodTrotineti);
+
+        for(PrevoznoSredstvo ps : vozilaSaNajvecimPrihodom.keySet()) {
+            try(ObjectOutputStream serijalizacija = new ObjectOutputStream(new FileOutputStream
+                    (Iznajmljivanje.properties.get("SERIJALIZACIJA_PUTANJA").toString() + ps.getJedinstveniIdentifikator() + ".ser"))){
+
+                serijalizacija.writeObject(ps);
+
+            } catch (IOException e) {
+                System.out.println();
+            }
+        }
+    }
+
+    public void deserijalizujVozila() {
+
+        System.out.println("deserijalizacija");
+        File folderSerijalizacije = new File(Iznajmljivanje.properties.get("SERIJALIZACIJA_PUTANJA").toString());
+        File serijalizovaniFajlovi[] = folderSerijalizacije.listFiles();
+        if(serijalizovaniFajlovi != null) {
+            for(File fajl : serijalizovaniFajlovi) {
+                try(ObjectInputStream deserijalizacija = new ObjectInputStream(new FileInputStream(fajl))) {
+                    PrevoznoSredstvo ps = (PrevoznoSredstvo) deserijalizacija.readObject();
+                    System.out.println(ps.getJedinstveniIdentifikator() + vozilaSaNajvecimPrihodom.get(ps));
+                } catch (IOException | ClassNotFoundException e) {
+                    System.out.println();
+                }
             }
         }
     }

@@ -6,14 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="23ea5e2b-c4e9-40d7-9021-01cf72e7bbcb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.~lock.iznajmljivanja_sorted.csv#" beforeDir="false" afterPath="$PROJECT_DIR$/.~lock.iznajmljivanja_sorted.csv#" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.~lock.prevozna_sredstva.csv#" beforeDir="false" afterPath="$PROJECT_DIR$/.~lock.prevozna_sredstva.csv#" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/EMobilityCompany.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/EMobilityCompany.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/mapa/Mapa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/mapa/Mapa.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/mapa/PoljeNaMapi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/mapa/PoljeNaMapi.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/GrafickiPrikaz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/GrafickiPrikaz.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/Simulacija.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/Simulacija.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/PrevoznoSredstvo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/PrevoznoSredstvo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

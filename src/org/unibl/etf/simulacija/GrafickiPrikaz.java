@@ -29,20 +29,24 @@ public class GrafickiPrikaz extends JFrame {
     private JButton tasterPrevoznaSredstva;
     private JButton tasterKvarovi;
     private JButton tasterRezultatiPoslovanja;
+    private JButton tasterSerijalizacija;
 
     private JLabel[][] prostorZaKretanje;
 
     private HashMap<String, PrevoznoSredstvo> svaPrevoznaSredstva;
     private ArrayList<Iznajmljivanje> izvrsenaIznajmljivanja;
     private ArrayList<Kvar> iznajmljivanjaSaKvarom;
+    private HashMap<PrevoznoSredstvo, Double> vozilaSaNajvecimPrihodom;
 
     public GrafickiPrikaz(HashMap<String, PrevoznoSredstvo> svaPrevoznaSredstva,
                           ArrayList<Iznajmljivanje> izvrsenaIznajmljivanja,
-                          ArrayList<Kvar> iznajmljivanjaSaKvarom) {
+                          ArrayList<Kvar> iznajmljivanjaSaKvarom,
+                          HashMap<PrevoznoSredstvo, Double> vozilaSaNajvecimPrihodom) {
 
         this.svaPrevoznaSredstva = svaPrevoznaSredstva;
         this.izvrsenaIznajmljivanja = izvrsenaIznajmljivanja;
         this.iznajmljivanjaSaKvarom = iznajmljivanjaSaKvarom;
+        this.vozilaSaNajvecimPrihodom = vozilaSaNajvecimPrihodom;
 
         setTitle("PJ2");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,6 +83,16 @@ public class GrafickiPrikaz extends JFrame {
             }
         });
         panelZaMeni.add(tasterRezultatiPoslovanja);
+
+
+        tasterSerijalizacija = new JButton("Deserijalizacija");
+        tasterSerijalizacija.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                prikaziPodatkeDeserijalizacije();
+            }
+        });
+        panelZaMeni.add(tasterSerijalizacija);
 
 
 
@@ -420,5 +434,28 @@ public class GrafickiPrikaz extends JFrame {
             prozorRezultataPoslovanja.setVisible(true);
 
         });
+    }
+
+    public void prikaziPodatkeDeserijalizacije() {
+        EventQueue.invokeLater(() -> {
+
+            //JOptionPane.showMessageDialog(null, "Hello, this is a message!", "Message Title", JOptionPane.INFORMATION_MESSAGE);
+
+            JFrame prozorSerijalizovanihPodataka = new JFrame("Vozila sa najvecim prihodom");
+
+            StringBuilder zaIspis = new StringBuilder("<html>");
+            for(Map.Entry<PrevoznoSredstvo, Double> entry :  vozilaSaNajvecimPrihodom.entrySet()) {
+                zaIspis.append(entry.getKey()).append(": ").append(entry.getValue()).append("<br>");
+            }
+
+            JLabel prostorZaIspis = new JLabel(zaIspis.toString(), SwingConstants.CENTER);
+
+            prozorSerijalizovanihPodataka.add(prostorZaIspis);
+            prozorSerijalizovanihPodataka.setSize(200, 100);
+            prozorSerijalizovanihPodataka.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            prozorSerijalizovanihPodataka.setVisible(true);
+
+        });
+
     }
 }
