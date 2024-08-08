@@ -30,14 +30,15 @@ public class PoljeNaMapi {
     }
 
     public boolean unutarUzegDijelaGrada() {
-       if((koordinataX >= 5 && koordinataX <= 14) && (koordinataY >= 5 && koordinataY <= 14)) {
+       if((koordinataX >= Mapa.UZI_DIO_MAPE_DONJA_GRANICA && koordinataX <= Mapa.UZI_DIO_MAPE_GORNJA_GRANICA) &&
+               (koordinataY >= Mapa.UZI_DIO_MAPE_DONJA_GRANICA && koordinataY <= Mapa.UZI_DIO_MAPE_GORNJA_GRANICA)) {
            return true;
        }
        return false;
     }
 
     public boolean unutarDozvoljenihGranica() {
-        if((koordinataX >= 0 && koordinataX <= 19) && (koordinataY >= 0 && koordinataY <= 19)) {
+        if((koordinataX >= 0 && koordinataX <= Mapa.VELICINA_MAPE - 1) && (koordinataY >= 0 && koordinataY <= Mapa.VELICINA_MAPE - 1)) {
             return true;
         }
         return false;
@@ -47,7 +48,7 @@ public class PoljeNaMapi {
     public String toString() {
         return "(" + koordinataX + ", " + koordinataY + ")";
     }
-//    mozda mi i ne treba
+
     @Override
     public boolean equals(Object obj) {
         PoljeNaMapi polje = (PoljeNaMapi)obj;

@@ -35,8 +35,6 @@ public class Simulacija {
             grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         });
 
-
-
         eMobilityCompany.obaviIznajmljivanja();
 
 

@@ -1,6 +1,7 @@
 package org.unibl.etf.simulacija;
 
 import org.unibl.etf.iznajmljivanje.Iznajmljivanje;
+import org.unibl.etf.mapa.Mapa;
 import org.unibl.etf.mapa.PoljeNaMapi;
 import org.unibl.etf.vozila.ElektricniAutomobil;
 import org.unibl.etf.vozila.ElektricniBicikl;
@@ -16,7 +17,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,13 +88,14 @@ public class GrafickiPrikaz extends JFrame {
         panelZaMapu.setBorder(new LineBorder(Color.BLACK, 3));
         prostorZaKretanje = new JLabel[20][20];
 
-        for(int i = 0; i < 20; i++) {
-            for(int j = 0; j < 20; j++) {
+        for(int i = 0; i < Mapa.VELICINA_MAPE; i++) {
+            for(int j = 0; j < Mapa.VELICINA_MAPE; j++) {
                 prostorZaKretanje[i][j] = new JLabel("", SwingConstants.CENTER);
                 prostorZaKretanje[i][j].setBorder(new LineBorder(Color.GRAY, 1));
                 prostorZaKretanje[i][j].setPreferredSize(new Dimension(20, 20));
                 prostorZaKretanje[i][j].setOpaque(true);
-                if((i >= 5 && i <= 14 ) && (j >= 5 && j <= 14)) {
+                if((i >= Mapa.UZI_DIO_MAPE_DONJA_GRANICA && i <= Mapa.UZI_DIO_MAPE_GORNJA_GRANICA ) &&
+                        (j >= Mapa.UZI_DIO_MAPE_DONJA_GRANICA && j <= Mapa.UZI_DIO_MAPE_GORNJA_GRANICA)) {
                     prostorZaKretanje[i][j].setBackground(Color.CYAN);
                 } else {
                     prostorZaKretanje[i][j].setBackground(Color.LIGHT_GRAY);
@@ -413,7 +414,6 @@ public class GrafickiPrikaz extends JFrame {
 
 
             /* dodavanje na glavni prozor */
-
             prozorRezultataPoslovanja.add(panelZaIzvjestaj);
             prozorRezultataPoslovanja.setSize(600, 800);
             prozorRezultataPoslovanja.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -421,7 +421,4 @@ public class GrafickiPrikaz extends JFrame {
 
         });
     }
-
-
-
 }

@@ -15,9 +15,17 @@ import java.util.stream.Collectors;
 
 public class EMobilityCompany {
 
-    private static final String AUTOMOBIL = "automobil";
-    private static final String BICIKL = "bicikl";
-    private static final String TROTINET = "trotinet";
+    public static final String AUTOMOBIL = "automobil";
+    public static final String BICIKL = "bicikl";
+    public static final String TROTINET = "trotinet";
+
+    public static final int BROJ_ULAZNIH_PARAMETARA_PREVOZNA_SREDSTVA = 9;
+    public static final int BROJ_ULAZNIH_PARAMETARA_IZNAJMLJIVANJA = 8;
+
+    public static final String FAJL_IZNAJMLJIVANJA = "iznajmljivanja.csv";
+    public static final String FAJL_PREVOZNA_SREDSTVA = "prevozna_sredstva.csv";
+
+
 
     /* singleton pattern */
     private static EMobilityCompany instanca;
@@ -33,7 +41,6 @@ public class EMobilityCompany {
     }
     /*************************************************/
 
-    // samo privremeno public
     private HashMap<String, PrevoznoSredstvo> prevoznaSredstva = new HashMap<>();
     private ArrayList<Iznajmljivanje> iznajmljivanja = new ArrayList<>();
     private ArrayList<Iznajmljivanje> izvrsenaIznajmljivanja = new ArrayList<>();
@@ -59,7 +66,7 @@ public class EMobilityCompany {
 
     public void ucitajPrevoznaSredstvaIzFajla() {
         try{
-            File fajlPutanjaZaPrevoznaSredstva = new File("prevozna_sredstva.csv");
+            File fajlPutanjaZaPrevoznaSredstva = new File(FAJL_PREVOZNA_SREDSTVA);
             BufferedReader citacVozila = new BufferedReader(new FileReader(fajlPutanjaZaPrevoznaSredstva));
             String linijaFajla;
 
@@ -70,7 +77,7 @@ public class EMobilityCompany {
 
                     String[] karakteristikeVozila = linijaFajla.split(",");
 
-                    if(karakteristikeVozila.length < 9) {
+                    if(karakteristikeVozila.length < BROJ_ULAZNIH_PARAMETARA_PREVOZNA_SREDSTVA) {
                         throw new PogresniUlazniPodaciException();
                     }
 
@@ -110,16 +117,14 @@ public class EMobilityCompany {
             citacVozila.close();
         } catch(IOException e) {
             System.out.println("Greska pri ucitavanju prevoznih sredstava iz fajla!");
-            e.printStackTrace();
         }
     }
 
 
     public void ucitajIznajmljivanjaIzFajla() {
 
-        try {
-            File fajlPutanjaZaIznajmljivanja = new File("iznajmljivanja.csv"); // vjerovatno treba biti static final clan
-            BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja));
+        File fajlPutanjaZaIznajmljivanja = new File(FAJL_IZNAJMLJIVANJA);
+        try (BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja));) {
 
             String linijaFajla;
             String regex = "\"([^\"]*)\"|([^,]+)";
@@ -129,8 +134,7 @@ public class EMobilityCompany {
             ArrayList<String> karakteristikeIznajmljivanja = new ArrayList<>();
 
             citacIznajmljivanja.readLine();
-            while((linijaFajla = citacIznajmljivanja.readLine()) != null) {
-
+            while ((linijaFajla = citacIznajmljivanja.readLine()) != null) {
 
                 try {
                     karakteristikeIznajmljivanja.clear();
@@ -144,7 +148,7 @@ public class EMobilityCompany {
                     }
 
                     try {
-                        if(karakteristikeIznajmljivanja.size() < 8) {
+                        if (karakteristikeIznajmljivanja.size() < BROJ_ULAZNIH_PARAMETARA_IZNAJMLJIVANJA) {
                             throw new NedovoljnoUlaznihPodatakaException();
                         } else {
 
@@ -152,7 +156,7 @@ public class EMobilityCompany {
                             String imeKorisnika = karakteristikeIznajmljivanja.get(1);
                             String identifikatorPrevoznogSredstva = karakteristikeIznajmljivanja.get(2);
                             PrevoznoSredstvo prevoznoSredstvo = prevoznaSredstva.get(identifikatorPrevoznogSredstva);
-                            if(prevoznoSredstvo == null) {
+                            if (prevoznoSredstvo == null) {
                                 throw new PrevoznoSredstvoNePostojiException("Prevozno sredstvo " +
                                         identifikatorPrevoznogSredstva + " nije moguce iznajmiti, jer ne postoji");
                             }
@@ -186,25 +190,9 @@ public class EMobilityCompany {
                 }
             });
 
-            // za testiranje //
-            /*
-            PrintWriter pisac = new PrintWriter(new BufferedWriter(new FileWriter("iznajmljivanja_2_sortirano.txt")));
-            for(Iznajmljivanje i : iznajmljivanja) {
-                pisac.println(i);
-                //System.out.println(i);
-            }
-            pisac.close();
-            */
-
-            // trebalo bi mozda zatvarati resurse u finally bloku
-
-            citacIznajmljivanja.close();
-
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("Greska pri ucitavanju iznajmljivanja iz fajla!");
             e.printStackTrace();
-        } finally {
-            // za zatvaranje resursa
         }
     }
 
@@ -216,11 +204,6 @@ public class EMobilityCompany {
                 iznajmljivanja.stream().collect(Collectors.groupingBy(Iznajmljivanje::getDatumVrijeme));
 
         Map<LocalDateTime, List<Iznajmljivanje>> sortiranaMapa = new TreeMap<>(grupisanoPoDatumVrijeme);
-
-//        sortiranaMapa.forEach((dateTime, iznajmljivanja) -> {
-//            System.out.println("DatumVrijeme: " + dateTime);
-//            iznajmljivanja.forEach(iznajmljivanje -> System.out.println(" - " + iznajmljivanje));
-//        });
 
         ArrayList<ArrayList<Iznajmljivanje>> listaIznajmljivanjaPoDatumVrijeme = new ArrayList<>();
         for(List<Iznajmljivanje> grupa : sortiranaMapa.values()) {
@@ -269,7 +252,6 @@ public class EMobilityCompany {
                 e.printStackTrace();
             }
 
-            System.out.println("------------------------------------");
             try {
                 Thread.sleep(100);   // treba biti 5000
             } catch (InterruptedException e) {

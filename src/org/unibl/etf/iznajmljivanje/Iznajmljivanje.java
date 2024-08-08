@@ -31,11 +31,7 @@ public class Iznajmljivanje extends Thread {
 
     private LocalDateTime  datumVrijeme;
     private Korisnik korisnik;
-
-    // obratiti paznju jer ovo polje nije navedeno u tekstu zadatka, ali ja mislim da je neophodno
-    //private String identifikatorPrevoznogSredstva;
     private PrevoznoSredstvo prevoznoSredstvo;
-
     private PoljeNaMapi pocetnaLokacija;
     private PoljeNaMapi krajnjaLokacija;
     private int trajanjeVoznjeSekunde;
@@ -49,8 +45,6 @@ public class Iznajmljivanje extends Thread {
 
     private static final Object lock = new Object();
     private static final Object lockPutanjaRacuna = new Object();
-
-    private ArrayList<Kvar> iznajmljivanjaSaKvarom = new ArrayList<>();
 
     static {
         properties = new Properties();
@@ -278,8 +272,6 @@ public class Iznajmljivanje extends Thread {
         SwingUtilities.invokeLater(() -> Simulacija.grafickiPrikaz.ukloniSaMape(finalPocetnaLokacija));
 
 
-        //
-
 
         PoljeNaMapi trenutnaLokacija = pocetnaLokacija;
 
@@ -305,8 +297,6 @@ public class Iznajmljivanje extends Thread {
         }
 
 
-//        while (trenutnaLokacija.getKoordinataX() !=  krajnjaLokacija.getKoordinataX()
-//                || trenutnaLokacija.getKoordinataY() != krajnjaLokacija.getKoordinataY()) {
         while (!trenutnaLokacija.equals(krajnjaLokacija)) {
 
             synchronized (lock) {
@@ -336,7 +326,6 @@ public class Iznajmljivanje extends Thread {
             String tekstZaIspis = "<html>" + prevoznoSredstvo.getJedinstveniIdentifikator() + " - " +  prevoznoSredstvo.getTrenutniNivoBaterije();
             if(finalTrenutnaLokacija.equals(krajnjaLokacija)) {
                 tekstZaIspis += "<br>" + "KRAJ";
-
             }
 
             final String tekstZaLambu = tekstZaIspis;
