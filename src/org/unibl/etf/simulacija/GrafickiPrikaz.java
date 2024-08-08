@@ -99,24 +99,12 @@ public class GrafickiPrikaz extends JFrame {
                 } else {
                     prostorZaKretanje[i][j].setBackground(Color.LIGHT_GRAY);
                 }
-
-
                 panelZaMapu.add(prostorZaKretanje[i][j]);
             }
         }
 
-        // Wrap the grid panel in another panel to center it
-//        JPanel centeringPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-//        centeringPanel.add(panelZaMapu);
-//
-//        // Set a fixed size for the grid panel
-//        panelZaMapu.setPreferredSize(new Dimension(1000, 1000));
-
-
-
         // dodaj na prozor
         getContentPane().add(panelZaMeni, BorderLayout.NORTH);
-        //getContentPane().add(centeringPanel, BorderLayout.CENTER);
         getContentPane().add(panelZaMapu, BorderLayout.CENTER);
         pack();
 
@@ -149,7 +137,7 @@ public class GrafickiPrikaz extends JFrame {
     }
 
 
-    void prikazPrevoznihSredstava() {
+    public void prikazPrevoznihSredstava() {
 
         EventQueue.invokeLater(() -> {
             JFrame prozorPrevoznihSredstava = new JFrame("Sva prevozna sredstva");
@@ -249,7 +237,7 @@ public class GrafickiPrikaz extends JFrame {
 
 
 
-    void prikazKvarova() {
+    public void prikazKvarova() {
         EventQueue.invokeLater(() -> {
 
             JFrame prozorKvarova = new JFrame("Svi kvarovi");
@@ -286,55 +274,6 @@ public class GrafickiPrikaz extends JFrame {
         });
     }
 
-//    void prikazRezultataPoslovanja() {
-//        EventQueue.invokeLater(() -> {
-//            JFrame prozorPoslovanja = new JFrame("Rezultati poslovanja");
-//            prozorPoslovanja.setSize(400, 200);
-//            prozorPoslovanja.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//            prozorPoslovanja.setVisible(true);
-//        });
-//    }
-
-//    public void prikazDnevnihIzvjestaja() {
-//
-//        Map<LocalDateTime, List<Iznajmljivanje>> grupisanoPoDatumVrijeme =
-//                izvrsenaIznajmljivanja.stream().collect(Collectors.groupingBy(Iznajmljivanje::getDatumVrijeme));
-//
-//        Map<LocalDateTime, List<Iznajmljivanje>> sortiranaMapa = new TreeMap<>(grupisanoPoDatumVrijeme);
-//
-//        ArrayList<ArrayList<Iznajmljivanje>> listaIznajmljivanjaPoDatumVrijeme = new ArrayList<>();
-//        for(List<Iznajmljivanje> grupa : sortiranaMapa.values()) {
-//            listaIznajmljivanjaPoDatumVrijeme.add(new ArrayList<>(grupa));
-//        }
-//        // duplirani kod iz metode obaviIznajmljivanja()
-//        // treba nekako rijesiti
-//
-//        for(ArrayList<Iznajmljivanje> listaPoDatumu : listaIznajmljivanjaPoDatumVrijeme) {
-//            double ukupanPrihod = 0.0;
-//            double ukupanPopust = 0.0;
-//            double ukupnoPromocije = 0.0;
-//            double ukupanIznosSvihVoznji = 0.0;
-//            double ukupanIznosOdrzavanja = 0.0;
-//            double ukupanIznosPopravkeKvarova = 0.0;
-//
-//            for(Iznajmljivanje i : listaPoDatumu) {
-//                ukupanPrihod += i.getRacunZaPlacanje().getUkupnoZaPlacanje();
-//                ukupanPopust += i.getRacunZaPlacanje().getIznosPopusta();
-//                ukupnoPromocije += i.getRacunZaPlacanje().getIznosPromocije();
-//                ukupanIznosSvihVoznji += i.getRacunZaPlacanje().getIznos();
-//                if(i.getPrevoznoSredstvo() instanceof  ElektricniAutomobil) {
-//                    ukupanIznosPopravkeKvarova += 0.7 * i.getPrevoznoSredstvo().getCijenaNabavke();
-//                } else if(i.getPrevoznoSredstvo() instanceof ElektricniBicikl) {
-//                    ukupanIznosPopravkeKvarova += 0.4 * i.getPrevoznoSredstvo().getCijenaNabavke();
-//                } else if(i.getPrevoznoSredstvo() instanceof  ElektricniTrotinet) {
-//                    ukupanIznosPopravkeKvarova += 0.2 * i.getPrevoznoSredstvo().getCijenaNabavke();
-//                } else {
-//                    System.out.println("Greska u dnevnim izvjestajima");
-//                }
-//                ukupanIznosOdrzavanja = ukupanPrihod * 0.2;
-//            }
-//        }
-//    }
 
     public void prikazRezultataPoslovanja() {
 
@@ -375,14 +314,16 @@ public class GrafickiPrikaz extends JFrame {
                         dnevniPopust += i.getRacunZaPlacanje().getIznosPopusta();
                         dnevnePromocije += i.getRacunZaPlacanje().getIznosPromocije();
                         dnevniIznosSvihVoznji += i.getRacunZaPlacanje().getIznos();
-                        if (i.getPrevoznoSredstvo() instanceof ElektricniAutomobil) {
-                            dnevniIznosPopravkeKvarova += 0.7 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                        } else if (i.getPrevoznoSredstvo() instanceof ElektricniBicikl) {
-                            dnevniIznosPopravkeKvarova += 0.4 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                        } else if (i.getPrevoznoSredstvo() instanceof ElektricniTrotinet) {
-                            dnevniIznosPopravkeKvarova += 0.2 * i.getPrevoznoSredstvo().getCijenaNabavke();
-                        } else {
-                            System.out.println("Greska u dnevnim izvjestajima");
+                        if(i.isDesioSeKvar()) {
+                            if (i.getPrevoznoSredstvo() instanceof ElektricniAutomobil) {
+                                dnevniIznosPopravkeKvarova += 0.07 * i.getPrevoznoSredstvo().getCijenaNabavke();
+                            } else if (i.getPrevoznoSredstvo() instanceof ElektricniBicikl) {
+                                dnevniIznosPopravkeKvarova += 0.04 * i.getPrevoznoSredstvo().getCijenaNabavke();
+                            } else if (i.getPrevoznoSredstvo() instanceof ElektricniTrotinet) {
+                                dnevniIznosPopravkeKvarova += 0.02 * i.getPrevoznoSredstvo().getCijenaNabavke();
+                            } else {
+                                System.out.println("Greska u dnevnim izvjestajima");
+                            }
                         }
                         dnevniIznosOdrzavanja = dnevniPrihod * 0.2;
                     }
@@ -390,9 +331,9 @@ public class GrafickiPrikaz extends JFrame {
 
                 String[] koloneDnevnogIzvjestaja = {"Prihod", "Popust", "Promocije", "Iznos", "Odrzavanje", "Kvarovi"};
                 String[][] podaciDnevnogIzvjestaja = {
-                        {String.valueOf(dnevniPrihod), String.valueOf(dnevniPopust), String.valueOf(dnevnePromocije),
-                                String.valueOf(dnevniIznosSvihVoznji), String.valueOf(dnevniIznosOdrzavanja),
-                                String.valueOf(dnevniIznosPopravkeKvarova)}
+                        {String.format("%.2f", dnevniPrihod), String.format("%.2f", dnevniPopust), String.format("%.2f", dnevnePromocije),
+                                String.format("%.2f", dnevniIznosSvihVoznji), String.format("%.2f", dnevniIznosOdrzavanja),
+                                String.format("%.2f", dnevniIznosPopravkeKvarova)}
                 };
 
                 DefaultTableModel modelTabeleDnevnogIzvjestaja = new DefaultTableModel(podaciDnevnogIzvjestaja, koloneDnevnogIzvjestaja);
@@ -451,14 +392,14 @@ public class GrafickiPrikaz extends JFrame {
 
             String[] koloneSumarnogIzvjestaja = {"Parametar", "Vrijednost"};
             String[][] podaciSumarnogIzvjestaja = {
-                    {"Ukupan prihod", String.valueOf(ukupanPrihod)},
-                    {"Ukupan popust", String.valueOf(ukupanPopust)},
-                    {"Ukupno promocije", String.valueOf(ukupnoPromocije)},
-                    {"Ukupan iznos", String.valueOf(ukupanIznosSvihVoznji)},
-                    {"Ukupno odrzavanje", String.valueOf(ukupanIznosOdrzavanja)},
-                    {"Ukupan iznos popravki", String.valueOf(ukupanIznosPopravkeKvarova)},
-                    {"Ukupni troskovi", String.valueOf(ukupniTroskoviKompanije)},
-                    {"Ukupan porez " , String.valueOf(ukupanPorez)}
+                    {"Ukupan prihod", String.format("%.2f", ukupanPrihod)},
+                    {"Ukupan popust", String.format("%.2f", ukupanPopust)},
+                    {"Ukupno promocije", String.format("%.2f", ukupnoPromocije)},
+                    {"Ukupan iznos", String.format("%.2f", ukupanIznosSvihVoznji)},
+                    {"Ukupno odrzavanje", String.format("%.2f", ukupanIznosOdrzavanja)},
+                    {"Ukupno kvarovi", String.format("%.2f", ukupanIznosPopravkeKvarova)},
+                    {"Ukupno troskovi", String.format("%.2f", ukupniTroskoviKompanije)},
+                    {"Ukupan porez " , String.format("%.2f", ukupanPorez)}
             };
 
             DefaultTableModel modelTabeleSumarnogIzvjestaja = new DefaultTableModel(podaciSumarnogIzvjestaja, koloneSumarnogIzvjestaja);
@@ -474,7 +415,7 @@ public class GrafickiPrikaz extends JFrame {
             /* dodavanje na glavni prozor */
 
             prozorRezultataPoslovanja.add(panelZaIzvjestaj);
-            prozorRezultataPoslovanja.setSize(600, 500);
+            prozorRezultataPoslovanja.setSize(600, 800);
             prozorRezultataPoslovanja.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             prozorRezultataPoslovanja.setVisible(true);
 

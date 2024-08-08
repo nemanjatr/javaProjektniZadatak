@@ -270,7 +270,7 @@ public class Iznajmljivanje extends Thread {
         SwingUtilities.invokeLater(() -> Simulacija.grafickiPrikaz.
                 prikaziNaMapi(finalPocetnaLokacija, prikazTeksaNaStartu));
         try {
-            Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 1000)); // radi brzeg izvrsavanja
+            Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde)); // radi brzeg izvrsavanja
             //Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
         } catch (InterruptedException e) {
             e.printStackTrace();

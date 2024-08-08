@@ -271,7 +271,7 @@ public class EMobilityCompany {
 
             System.out.println("------------------------------------");
             try {
-                Thread.sleep(5000);   // treba biti 5000
+                Thread.sleep(100);   // treba biti 5000
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
