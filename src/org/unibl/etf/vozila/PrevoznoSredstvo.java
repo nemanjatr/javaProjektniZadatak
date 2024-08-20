@@ -13,6 +13,8 @@ public abstract class PrevoznoSredstvo implements Serializable {
     protected String model;
     protected int trenutniNivoBaterije;
     protected static int POCETNI_NIVO_BATERIJE = 100;
+    protected static int MAKSIMALNI_NIVO_BATERIJE = 100;
+
 
 
     public PrevoznoSredstvo(String jedinstveniIdentifikator, String cijenaNabavke, String proizvodjac, String model) throws PogresniUlazniPodaciException {
@@ -50,6 +52,14 @@ public abstract class PrevoznoSredstvo implements Serializable {
             this.trenutniNivoBaterije--;
         } else {
             throw new PotrosenaBaterijeException();
+        }
+    }
+
+    public void dopuniBateriju(int dopunjenaVrijednost) {
+        if(this.trenutniNivoBaterije + dopunjenaVrijednost > MAKSIMALNI_NIVO_BATERIJE) {
+            this.trenutniNivoBaterije = MAKSIMALNI_NIVO_BATERIJE;
+        } else {
+            this.trenutniNivoBaterije += dopunjenaVrijednost;
         }
     }
 

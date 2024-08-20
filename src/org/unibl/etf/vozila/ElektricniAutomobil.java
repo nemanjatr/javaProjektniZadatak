@@ -5,6 +5,7 @@ import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 
 public class ElektricniAutomobil extends PrevoznoSredstvo {
@@ -14,6 +15,7 @@ public class ElektricniAutomobil extends PrevoznoSredstvo {
 
     private LocalDate datumNabavke;
     private String opis;
+    private ArrayList<String> spisakPutnika = new ArrayList<>();
 
     public ElektricniAutomobil(String jedinstveniIdentifikator, String cijenaNabavke, String proizvodjac, String model,
                                String datumNabavke, String opis) throws PogresniUlazniPodaciException {

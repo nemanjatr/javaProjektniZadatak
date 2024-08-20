@@ -26,28 +26,29 @@ public class Simulacija {
         EMobilityCompany eMobilityCompany = EMobilityCompany.getInstanca();
         Mapa mapa = new Mapa();
 
-//        eMobilityCompany.ucitajPrevoznaSredstvaIzFajla();
-//        eMobilityCompany.getPrevoznaSredstva().forEach((id, ps) -> System.out.println(id));
+        eMobilityCompany.ucitajPrevoznaSredstvaIzFajla();
+        eMobilityCompany.ucitajIznajmljivanjaIzFajla();
+        //eMobilityCompany.getPrevoznaSredstva().forEach((id, ps) -> System.out.println(id));
+        eMobilityCompany.getIznajmljivanja().forEach(i -> System.out.println(i.korisnik));
 
 
-        SwingUtilities.invokeLater(() -> {
-            grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(),
-                    eMobilityCompany.getIzvrsenaIznajmljivanja(),
-                    eMobilityCompany.getIznajmljivanjaSaKvarom(),
-                    eMobilityCompany.getVozilaSaNajvecimPrihodom());
-            grafickiPrikaz.setVisible(true);
-            grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        });
-
-        eMobilityCompany.obaviIznajmljivanja();
-        eMobilityCompany.pronadjiVozilaSaNajvecimPrihodom();
-        eMobilityCompany.deserijalizujVozila();
-
-        for(Iznajmljivanje i : eMobilityCompany.getIzvrsenaIznajmljivanja()) {
-            System.out.println("Prihod " + i.getPrevoznoSredstvo().getJedinstveniIdentifikator()
-                    + ": " + i.getRacunZaPlacanje().getUkupnoZaPlacanje());
-        }
-
+//        SwingUtilities.invokeLater(() -> {
+//            grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(),
+//                    eMobilityCompany.getIzvrsenaIznajmljivanja(),
+//                    eMobilityCompany.getIznajmljivanjaSaKvarom(),
+//                    eMobilityCompany.getVozilaSaNajvecimPrihodom());
+//            grafickiPrikaz.setVisible(true);
+//            grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+//        });
+//
+//        eMobilityCompany.obaviIznajmljivanja();
+//        eMobilityCompany.pronadjiVozilaSaNajvecimPrihodom();
+//        eMobilityCompany.deserijalizujVozila();
+//
+//        for(Iznajmljivanje i : eMobilityCompany.getIzvrsenaIznajmljivanja()) {
+//            System.out.println("Prihod " + i.getPrevoznoSredstvo().getJedinstveniIdentifikator()
+//                    + ": " + i.getRacunZaPlacanje().getUkupnoZaPlacanje());
+//        }
 
 
 

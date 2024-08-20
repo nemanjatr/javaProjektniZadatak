@@ -35,7 +35,7 @@ public class Iznajmljivanje extends Thread {
     private int redniBrojIznajmljivanja;
 
     private LocalDateTime  datumVrijeme;
-    private Korisnik korisnik;
+    public Korisnik korisnik;
     private PrevoznoSredstvo prevoznoSredstvo;
     private PoljeNaMapi pocetnaLokacija;
     private PoljeNaMapi krajnjaLokacija;
