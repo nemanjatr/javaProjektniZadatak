@@ -200,6 +200,8 @@ public class EMobilityCompany {
     public void obaviIznajmljivanja() {
         this.ucitajPrevoznaSredstvaIzFajla();
         this.ucitajIznajmljivanjaIzFajla();
+        String vozackaDozvola = "";
+        String identifikacioniDokument = "";
 
         Map<LocalDateTime, List<Iznajmljivanje>> grupisanoPoDatumVrijeme =
                 iznajmljivanja.stream().collect(Collectors.groupingBy(Iznajmljivanje::getDatumVrijeme));
@@ -240,6 +242,9 @@ public class EMobilityCompany {
                                     iznajmljivanje.getPrevoznoSredstvo().getJedinstveniIdentifikator(),
                                     iznajmljivanje.getDatumVrijeme(), "opis kvara"));
                     }
+
+                    vozackaDozvola = iznajmljivanje.getKorisnik().getBrojVozackeDozvole();
+                    identifikacioniDokument = iznajmljivanje.getKorisnik().getDokument().getBrojDokumenta();
 
                     iznajmljivanje.start();
                 }

@@ -35,7 +35,7 @@ public class Iznajmljivanje extends Thread {
     private int redniBrojIznajmljivanja;
 
     private LocalDateTime  datumVrijeme;
-    public Korisnik korisnik;
+    private Korisnik korisnik;
     private PrevoznoSredstvo prevoznoSredstvo;
     private PoljeNaMapi pocetnaLokacija;
     private PoljeNaMapi krajnjaLokacija;
@@ -120,6 +120,10 @@ public class Iznajmljivanje extends Thread {
 
     public boolean isDesioSeKvar() {
         return desioSeKvar;
+    }
+
+    public Korisnik getKorisnik() {
+        return korisnik;
     }
 
 
