@@ -6,7 +6,7 @@ import org.unibl.etf.izuzeci.PotrosenaBaterijeException;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class PrevoznoSredstvo implements Serializable {
+public abstract class PrevoznoSredstvo implements Serializable {
     protected String jedinstveniIdentifikator;
     protected double cijenaNabavke;
     protected String proizvodjac;
