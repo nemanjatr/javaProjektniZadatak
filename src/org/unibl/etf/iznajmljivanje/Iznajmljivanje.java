@@ -13,6 +13,7 @@ import org.unibl.etf.vozila.PrevoznoSredstvo;
 
 import javax.swing.*;
 import java.io.*;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +24,10 @@ public class Iznajmljivanje extends Thread {
 
     private static final String PROPERTIES_PODACI_GRESKA = "Pogresni podaci unutar properties fajla!";
     private static final String PROPERTIES_UPOZORENJE = "Rezultati su mozda pogresni. Molimo provjerite vrijednosti unutar properties fajla!";
+    private static final String EXCEPTION_PORUKA = "Greska pri ucitavanju ulaznih podataka iz fajla! Neocekivan datum iznajmljivanja!";
+    private static final String RACUNANJE_CIJENE_PORUKA = "Pogresan jedinstveni identifikator vozila u podacima za iznajmljivanje";
+    private static final String RACUNANJE_IZNOSA_PORUKA = "Greska u vrijednosti tarife naplacivanja. Ne odgovara tarifi niti za uzi dio grada niti za siri!";
+
     public static final Properties properties;
 
 
@@ -74,28 +79,27 @@ public class Iznajmljivanje extends Thread {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy HH:mm");
             this.datumVrijeme = LocalDateTime.parse(datumVrijeme.trim(), formatter);
-            this.korisnik = new Korisnik(imeKorisnika);
-            this.prevoznoSredstvo = prevoznoSredstvo;
+        } catch (DateTimeException e) {
+            throw new PogresniUlazniPodaciException(EXCEPTION_PORUKA);
+        }
 
-            String[] parsiranaPocetnaLokacija = pocetnaLokacija.split(",");
-            this.pocetnaLokacija = new PoljeNaMapi(Integer.parseInt(parsiranaPocetnaLokacija[0]),
-                    Integer.parseInt(parsiranaPocetnaLokacija[1]));
-            String[] parsiranaKrajnjaLokacija = krajnjaLokacija.split(",");
-            this.krajnjaLokacija = new PoljeNaMapi(Integer.parseInt(parsiranaKrajnjaLokacija[0]),
-                    Integer.parseInt(parsiranaKrajnjaLokacija[1]));
+        this.korisnik = new Korisnik(imeKorisnika);
+        this.prevoznoSredstvo = prevoznoSredstvo;
 
-            if(!this.pocetnaLokacija.unutarDozvoljenihGranica() || !this.krajnjaLokacija.unutarDozvoljenihGranica()) {
-                throw new PogresniUlazniPodaciException();
-            }
+        String[] parsiranaPocetnaLokacija = pocetnaLokacija.split(",");
+        this.pocetnaLokacija = new PoljeNaMapi(Integer.parseInt(parsiranaPocetnaLokacija[0]),
+                Integer.parseInt(parsiranaPocetnaLokacija[1]));
+        String[] parsiranaKrajnjaLokacija = krajnjaLokacija.split(",");
+        this.krajnjaLokacija = new PoljeNaMapi(Integer.parseInt(parsiranaKrajnjaLokacija[0]),
+                Integer.parseInt(parsiranaKrajnjaLokacija[1]));
 
-            this.trajanjeVoznjeSekunde = Integer.parseInt(trajanjeVoznjeSekunde);
-            this.desioSeKvar = desioSeKvar.equalsIgnoreCase("da");
-            this.imaPromociju = imaPromociju.equalsIgnoreCase("da");
-
-        } catch(NumberFormatException e) {
+        if(!this.pocetnaLokacija.unutarDozvoljenihGranica() || !this.krajnjaLokacija.unutarDozvoljenihGranica()) {
             throw new PogresniUlazniPodaciException();
         }
 
+        this.trajanjeVoznjeSekunde = Integer.parseInt(trajanjeVoznjeSekunde);
+        this.desioSeKvar = desioSeKvar.equalsIgnoreCase("da");
+        this.imaPromociju = imaPromociju.equalsIgnoreCase("da");
     }
 
     public LocalDateTime getDatumVrijeme() {
@@ -130,7 +134,7 @@ public class Iznajmljivanje extends Thread {
             } else if(prevoznoSredstvo instanceof ElektricniTrotinet) {
                 racunZaPlacanje.setOsnovnaCijena(Double.parseDouble(properties.get("SCOOTER_UNIT_PRICE").toString()) * trajanjeVoznjeSekunde);
             } else {
-                System.out.println("Pogresan jedinstveni identifikator vozila u podacima za iznajmljivanje");
+                System.out.println(RACUNANJE_CIJENE_PORUKA);
             }
 
         } catch (NumberFormatException e) {
@@ -156,7 +160,7 @@ public class Iznajmljivanje extends Thread {
             } else if("siri".equals(tarifaNaplacivanja)) {
                 racunZaPlacanje.setIznos(Double.parseDouble(properties.get("DISTANCE_WIDE").toString()) * osnovnaCijena);
             } else {
-                System.out.println("Greska u vrijednosti tarife naplacivanja. Ne odgovara tarifi niti za uzi dio grada niti za siri!");
+                System.out.println(RACUNANJE_IZNOSA_PORUKA);
             }
         } catch (NumberFormatException e) {
             throw new PogresniUlazniPodaciException(PROPERTIES_PODACI_GRESKA);

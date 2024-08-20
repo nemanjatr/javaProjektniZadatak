@@ -2,15 +2,15 @@ package org.unibl.etf.vozila;
 
 import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
 
-import java.lang.reflect.Field;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+
 
 public class ElektricniAutomobil extends PrevoznoSredstvo {
+
+    private static final String EXCEPTION_PORUKA_DATUM = "Greska pri ucitavanju ulaznih podataka iz fajla! Neocekivan datum nabavke vozila ";
+    private static final String EXCEPTION_PORUKA_OPIS = "Greska pri ucitavanju ulaznih podataka iz fajla! Neocekivan opis vozila ";
 
     private LocalDate datumNabavke;
     private String opis;
@@ -23,11 +23,10 @@ public class ElektricniAutomobil extends PrevoznoSredstvo {
         try {
             this.datumNabavke = LocalDate.parse(datumNabavke, formater);
         } catch (DateTimeException e) {
-            System.out.println("Greska pri parsiranju datuma nabavke vozila " + jedinstveniIdentifikator);
-            throw new PogresniUlazniPodaciException();
+            throw new PogresniUlazniPodaciException(EXCEPTION_PORUKA_DATUM + jedinstveniIdentifikator);
         }
         if(opis.isEmpty()) {
-            throw  new PogresniUlazniPodaciException();
+            throw  new PogresniUlazniPodaciException(EXCEPTION_PORUKA_OPIS + jedinstveniIdentifikator);
         }
         this.opis = opis;
     }

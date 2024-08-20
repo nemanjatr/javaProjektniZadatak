@@ -26,6 +26,9 @@ public class Simulacija {
         EMobilityCompany eMobilityCompany = EMobilityCompany.getInstanca();
         Mapa mapa = new Mapa();
 
+//        eMobilityCompany.ucitajPrevoznaSredstvaIzFajla();
+//        eMobilityCompany.getPrevoznaSredstva().forEach((id, ps) -> System.out.println(id));
+
 
         SwingUtilities.invokeLater(() -> {
             grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(),
@@ -40,10 +43,10 @@ public class Simulacija {
         eMobilityCompany.pronadjiVozilaSaNajvecimPrihodom();
         eMobilityCompany.deserijalizujVozila();
 
-//        for(Iznajmljivanje i : eMobilityCompany.getIzvrsenaIznajmljivanja()) {
-//            System.out.println("Prihod " + i.getPrevoznoSredstvo().getJedinstveniIdentifikator()
-//                    + ": " + i.getRacunZaPlacanje().getUkupnoZaPlacanje());
-//        }
+        for(Iznajmljivanje i : eMobilityCompany.getIzvrsenaIznajmljivanja()) {
+            System.out.println("Prihod " + i.getPrevoznoSredstvo().getJedinstveniIdentifikator()
+                    + ": " + i.getRacunZaPlacanje().getUkupnoZaPlacanje());
+        }
 
 
 

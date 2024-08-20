@@ -5,11 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="23ea5e2b-c4e9-40d7-9021-01cf72e7bbcb" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/IznajmljivanjaOdbrana.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.~lock.iznajmljivanja_sorted.csv#" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.~lock.prevozna_sredstva.csv#" beforeDir="false" afterPath="$PROJECT_DIR$/.~lock.prevozna_sredstva.csv#" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/serijalizacija/T2.ser" beforeDir="false" afterPath="$PROJECT_DIR$/serijalizacija/T2.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/EMobilityCompany.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/EMobilityCompany.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/GrafickiPrikaz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/GrafickiPrikaz.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/Simulacija.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/Simulacija.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniAutomobil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniAutomobil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniBicikl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniBicikl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniTrotinet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniTrotinet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/PrevoznoSredstvo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/PrevoznoSredstvo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,18 +44,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Simulacija.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/home/nemanja/Desktop/javaProjekti/projektniZadatak/src/Main.java&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;IntelliLang.Configuration&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.Main.executor": "Run",
+    "Application.Simulacija.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/nemanja/Desktop/javaProjekti/projektniZadatak",
+    "onboarding.tips.debug.path": "/home/nemanja/Desktop/javaProjekti/projektniZadatak/src/Main.java",
+    "settings.editor.selected.configurable": "IntelliLang.Configuration"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="Simulacija" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.unibl.etf.simulacija.Simulacija" />

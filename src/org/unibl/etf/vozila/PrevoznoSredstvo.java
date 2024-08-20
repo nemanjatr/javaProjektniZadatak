@@ -17,19 +17,11 @@ public class PrevoznoSredstvo implements Serializable {
 
     public PrevoznoSredstvo(String jedinstveniIdentifikator, String cijenaNabavke, String proizvodjac, String model) throws PogresniUlazniPodaciException {
 
-        if (jedinstveniIdentifikator.isEmpty() || proizvodjac.isEmpty() || model.isEmpty()) {
-            throw new PogresniUlazniPodaciException();
-        }
         this.jedinstveniIdentifikator = jedinstveniIdentifikator;
         this.proizvodjac = proizvodjac;
         this.model = model;
         this.trenutniNivoBaterije = POCETNI_NIVO_BATERIJE;
-
-        try {
-            this.cijenaNabavke = Double.parseDouble(cijenaNabavke);
-        } catch (NumberFormatException e) {
-            throw new PogresniUlazniPodaciException();
-        }
+        this.cijenaNabavke = Double.parseDouble(cijenaNabavke);
 
     }
 

@@ -22,9 +22,15 @@ public class EMobilityCompany {
     public static final int BROJ_ULAZNIH_PARAMETARA_PREVOZNA_SREDSTVA = 9;
     public static final int BROJ_ULAZNIH_PARAMETARA_IZNAJMLJIVANJA = 8;
 
-    public static final String FAJL_IZNAJMLJIVANJA = "iznajmljivanja.csv";
+    public static final String FAJL_IZNAJMLJIVANJA = "IznajmljivanjaOdbrana.csv";
     public static final String FAJL_PREVOZNA_SREDSTVA = "prevozna_sredstva.csv";
 
+    private static final String POGRESNI_PODACI_EXCEPTION = "... Program se nastavlja.";
+    private static final String VOZILO_VEC_UCITANO = "Prevozno sredstvo vec ucitano ";
+    private static final String ULAZNI_PODACI = "Greska pri ucitavanju ulaznih podataka iz fajla! ";
+    private static final String ULAZNI_FAJL = "Greska sa ulaznim fajlom ";
+
+    private static final String NEMOGUCE_IZNAJMLJIVANJE = "Prevozno sredstvo nije moguce iznajmiti, jer ne postoji";
 
 
     /* singleton pattern */
@@ -70,58 +76,63 @@ public class EMobilityCompany {
     }
 
     public void ucitajPrevoznaSredstvaIzFajla() {
-        try{
-            File fajlPutanjaZaPrevoznaSredstva = new File(FAJL_PREVOZNA_SREDSTVA);
-            BufferedReader citacVozila = new BufferedReader(new FileReader(fajlPutanjaZaPrevoznaSredstva));
+
+        try(BufferedReader citacVozila = new BufferedReader(new FileReader(FAJL_PREVOZNA_SREDSTVA))) {
+
             String linijaFajla;
+            String regex = "^([A-Za-z0-9]+)," +            // ID
+                    "([A-Za-z]+)," +                // Proizvodjac
+                    "([A-Za-z0-9]+)," +             // Model
+                    "(\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\.)?," +  // Datum nabavke (optional)
+                    "(\\d+)," +                   // Cijena (mandatory)
+                    "(\\d+)?,?" +                   // Domet (optional)
+                    "(\\d+)?,?" +                   // Max Brzina (optional)
+                    "(.*?)," +                     // Opis (optional)
+                    "([A-Za-z]+)$";                // Vrsta
 
-            citacVozila.readLine();
+            Pattern pattern = Pattern.compile(regex);
+
+            linijaFajla = citacVozila.readLine();
             while((linijaFajla = citacVozila.readLine()) != null) {
-
                 try {
+                    Matcher matcher = pattern.matcher(linijaFajla);
 
-                    String[] karakteristikeVozila = linijaFajla.split(",");
+                    if(matcher.matches()) {
+                        String jedinstveniIdenitifikator = matcher.group(1);
+                        String proizvodjac = matcher.group(2);
+                        String model = matcher.group(3);
+                        String datumNabavke = matcher.group(4) != null ? matcher.group(4) : "N/A";
+                        String cijena = matcher.group(5) != null ? matcher.group(5) : "N/A";
+                        String domet = matcher.group(6) != null ? matcher.group(6) : "N/A";
+                        String maksimalnaBrzina = matcher.group(7) != null ? matcher.group(7) : "N/A";
+                        String opis = matcher.group(8) != null ? matcher.group(8) : "N/A";
+                        String vrsta = matcher.group(9);
 
-                    if(karakteristikeVozila.length < BROJ_ULAZNIH_PARAMETARA_PREVOZNA_SREDSTVA) {
-                        throw new PogresniUlazniPodaciException();
-                    }
-
-                    String jedinstveniIdenitifikator = karakteristikeVozila[0];
-                    String proizvodjac = karakteristikeVozila[1];
-                    String model = karakteristikeVozila[2];
-                    String datumNabavke = karakteristikeVozila[3];
-                    String cijena = karakteristikeVozila[4];
-                    String domet = karakteristikeVozila[5];
-                    String maksimalnaBrzina = karakteristikeVozila[6];
-                    String opis = karakteristikeVozila[7];
-                    String vrsta =  karakteristikeVozila[8];
-
-                    if(jedinstveniIdenitifikator.isEmpty()) {
-                        throw new PogresniUlazniPodaciException();
-                    }
-
-                    if(!prevoznaSredstva.containsKey(jedinstveniIdenitifikator)) {
-                        if(AUTOMOBIL.equals(vrsta)){
-                            prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniAutomobil(jedinstveniIdenitifikator, cijena,
-                                    proizvodjac, model, datumNabavke, opis));
-                        } else if(BICIKL.equals(vrsta)){
-                            prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniBicikl(jedinstveniIdenitifikator, cijena,
-                                    proizvodjac, model, domet));
-                        } else if(TROTINET.equals(vrsta)){
-                            prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniTrotinet(jedinstveniIdenitifikator, cijena,
-                                    proizvodjac, model, maksimalnaBrzina));
+                        if(!prevoznaSredstva.containsKey(jedinstveniIdenitifikator)) {
+                            if(AUTOMOBIL.equals(vrsta)){
+                                prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniAutomobil(jedinstveniIdenitifikator, cijena,
+                                        proizvodjac, model, datumNabavke, opis));
+                            } else if(BICIKL.equals(vrsta)){
+                                prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniBicikl(jedinstveniIdenitifikator, cijena,
+                                        proizvodjac, model, domet));
+                            } else if(TROTINET.equals(vrsta)){
+                                prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniTrotinet(jedinstveniIdenitifikator, cijena,
+                                        proizvodjac, model, maksimalnaBrzina));
+                            }
+                        } else {
+                            throw new PogresniUlazniPodaciException(VOZILO_VEC_UCITANO + jedinstveniIdenitifikator);
                         }
+
                     } else {
-                        System.out.println("Prevozno sredstvo " + jedinstveniIdenitifikator + " vec ucitano.");
+                        throw new PogresniUlazniPodaciException(ULAZNI_PODACI + linijaFajla);
                     }
+
                 } catch (PogresniUlazniPodaciException e) {
-
+                    System.out.println(POGRESNI_PODACI_EXCEPTION);
                 }
-
             }
-            citacVozila.close();
-        } catch(IOException e) {
-            System.out.println("Greska pri ucitavanju prevoznih sredstava iz fajla!");
+        } catch (IOException e) {
+            System.out.println(ULAZNI_FAJL + FAJL_PREVOZNA_SREDSTVA);
         }
     }
 
@@ -129,64 +140,50 @@ public class EMobilityCompany {
     public void ucitajIznajmljivanjaIzFajla() {
 
         File fajlPutanjaZaIznajmljivanja = new File(FAJL_IZNAJMLJIVANJA);
-        try (BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja));) {
+        try (BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja))) {
 
             String linijaFajla;
-            String regex = "\"([^\"]*)\"|([^,]+)";
+            String regex = "^([0-9]{1,2}\\.[0-9]{1,2}\\.\\d{4}\\s[0-9]{2}:[0-9]{2})," +
+                    "([A-Za-z0-9]+)," +
+                    "([A-Za-z0-9]+)," +
+                    "\"([0-9]+,[0-9]+)\"," +
+                    "\"([0-9]+,[0-9]+)\"," +
+                    "([0-9]+)," +
+                    "(ne|da)," +
+                    "(ne|da)$";
             Pattern pattern = Pattern.compile(regex);
-            Matcher matcher;
 
-            ArrayList<String> karakteristikeIznajmljivanja = new ArrayList<>();
-
-            citacIznajmljivanja.readLine();
+            linijaFajla = citacIznajmljivanja.readLine();
             while ((linijaFajla = citacIznajmljivanja.readLine()) != null) {
 
                 try {
-                    karakteristikeIznajmljivanja.clear();
-                    matcher = pattern.matcher(linijaFajla);
-                    while (matcher.find()) {
-                        if (matcher.group(1) != null) {
-                            karakteristikeIznajmljivanja.add(matcher.group(1));
-                        } else {
-                            karakteristikeIznajmljivanja.add(matcher.group(2));
+                    Matcher matcher = pattern.matcher(linijaFajla);
+
+                    if (matcher.matches()) {
+
+                        String datumVrijeme = matcher.group(1);
+                        String imeKorisnika = matcher.group(2);
+                        String idPrevoznogSredstva = matcher.group(3);
+                        PrevoznoSredstvo prevoznoSredstvo = prevoznaSredstva.get(idPrevoznogSredstva);
+                        if (prevoznoSredstvo == null) {
+                            throw new PrevoznoSredstvoNePostojiException(NEMOGUCE_IZNAJMLJIVANJE + idPrevoznogSredstva);
                         }
+                        String pocetnaLokacija = matcher.group(4);
+                        String krajnjaLokacija = matcher.group(5);
+                        String trajanjeVoznjeSekunde = matcher.group(6);
+                        String kvar = matcher.group(7);
+                        String promocija = matcher.group(8);
+
+                        iznajmljivanja.add(new Iznajmljivanje(datumVrijeme, imeKorisnika, prevoznoSredstvo, pocetnaLokacija,
+                                krajnjaLokacija, trajanjeVoznjeSekunde, kvar, promocija));
+
+                    } else {
+                        throw new PogresniUlazniPodaciException(ULAZNI_PODACI + linijaFajla);
                     }
-
-                    try {
-                        if (karakteristikeIznajmljivanja.size() < BROJ_ULAZNIH_PARAMETARA_IZNAJMLJIVANJA) {
-                            throw new NedovoljnoUlaznihPodatakaException();
-                        } else {
-
-                            String datumVrijeme = karakteristikeIznajmljivanja.get(0);
-                            String imeKorisnika = karakteristikeIznajmljivanja.get(1);
-                            String identifikatorPrevoznogSredstva = karakteristikeIznajmljivanja.get(2);
-                            PrevoznoSredstvo prevoznoSredstvo = prevoznaSredstva.get(identifikatorPrevoznogSredstva);
-                            if (prevoznoSredstvo == null) {
-                                throw new PrevoznoSredstvoNePostojiException("Prevozno sredstvo " +
-                                        identifikatorPrevoznogSredstva + " nije moguce iznajmiti, jer ne postoji");
-                            }
-                            String pocetnaLokacija = karakteristikeIznajmljivanja.get(3);
-                            String krajnjaLokacija = karakteristikeIznajmljivanja.get(4);
-                            String trajanjeVoznjeSekunde = karakteristikeIznajmljivanja.get(5);
-                            String kvar = karakteristikeIznajmljivanja.get(6);
-                            String promocija = karakteristikeIznajmljivanja.get(7);
-
-                            try {
-                                iznajmljivanja.add(new Iznajmljivanje(datumVrijeme, imeKorisnika, prevoznoSredstvo,
-                                        pocetnaLokacija, krajnjaLokacija, trajanjeVoznjeSekunde, kvar, promocija));
-
-                            } catch (PogresniUlazniPodaciException e) {
-
-                            }
-                        }
-                    } catch (NedovoljnoUlaznihPodatakaException e) {
-
-                    }
-                } catch (PrevoznoSredstvoNePostojiException e) {
-
+                } catch (PrevoznoSredstvoNePostojiException | PogresniUlazniPodaciException e) {
+                    System.out.println(POGRESNI_PODACI_EXCEPTION);
                 }
             }
-
             // poslije while petlje sortiranje ArrayList-e
             iznajmljivanja.sort(new Comparator<Iznajmljivanje>() {
                 @Override
@@ -196,8 +193,7 @@ public class EMobilityCompany {
             });
 
         } catch (IOException e) {
-            System.out.println("Greska pri ucitavanju iznajmljivanja iz fajla!");
-            e.printStackTrace();
+            System.out.println(ULAZNI_FAJL);
         }
     }
 
