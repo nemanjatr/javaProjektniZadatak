@@ -18,13 +18,7 @@ public class EMobilityCompany {
     public static final String AUTOMOBIL = "automobil";
     public static final String BICIKL = "bicikl";
     public static final String TROTINET = "trotinet";
-
-    public static final int BROJ_ULAZNIH_PARAMETARA_PREVOZNA_SREDSTVA = 9;
-    public static final int BROJ_ULAZNIH_PARAMETARA_IZNAJMLJIVANJA = 8;
-
-    public static final String FAJL_IZNAJMLJIVANJA = "IznajmljivanjaOdbrana.csv";
-    public static final String FAJL_PREVOZNA_SREDSTVA = "prevozna_sredstva.csv";
-
+    
     private static final String POGRESNI_PODACI_EXCEPTION = "... Program se nastavlja.";
     private static final String VOZILO_VEC_UCITANO = "Prevozno sredstvo vec ucitano ";
     private static final String ULAZNI_PODACI = "Greska pri ucitavanju ulaznih podataka iz fajla! ";
@@ -77,7 +71,7 @@ public class EMobilityCompany {
 
     public void ucitajPrevoznaSredstvaIzFajla() {
 
-        try(BufferedReader citacVozila = new BufferedReader(new FileReader(FAJL_PREVOZNA_SREDSTVA))) {
+        try(BufferedReader citacVozila = new BufferedReader(new FileReader(Iznajmljivanje.inputPathProperties.get("PREVOZNA_SREDSTVA").toString()))) {
 
             String linijaFajla;
             String regex = "^([A-Za-z0-9]+)," +            // ID
@@ -132,14 +126,14 @@ public class EMobilityCompany {
                 }
             }
         } catch (IOException e) {
-            System.out.println(ULAZNI_FAJL + FAJL_PREVOZNA_SREDSTVA);
+            System.out.println(ULAZNI_FAJL);
         }
     }
 
 
     public void ucitajIznajmljivanjaIzFajla() {
 
-        File fajlPutanjaZaIznajmljivanja = new File(FAJL_IZNAJMLJIVANJA);
+        File fajlPutanjaZaIznajmljivanja = new File(Iznajmljivanje.inputPathProperties.get("IZNAJMLJIVANJA").toString());
         try (BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja))) {
 
             String linijaFajla;
@@ -259,7 +253,7 @@ public class EMobilityCompany {
             }
 
             try {
-                Thread.sleep(100);   // treba biti 5000
+                Thread.sleep(5000);   // treba biti 5000
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -353,7 +347,7 @@ public class EMobilityCompany {
 
         for(PrevoznoSredstvo ps : vozilaSaNajvecimPrihodom.keySet()) {
             try(ObjectOutputStream serijalizacija = new ObjectOutputStream(new FileOutputStream
-                    (Iznajmljivanje.properties.get("SERIJALIZACIJA_PUTANJA").toString() + ps.getJedinstveniIdentifikator() + ".ser"))){
+                    (Iznajmljivanje.outPathProperties.get("SERIJALIZACIJA_PUTANJA").toString() + ps.getJedinstveniIdentifikator() + ".ser"))){
 
                 serijalizacija.writeObject(ps);
 
@@ -366,7 +360,7 @@ public class EMobilityCompany {
     public void deserijalizujVozila() {
 
         System.out.println("deserijalizacija");
-        File folderSerijalizacije = new File(Iznajmljivanje.properties.get("SERIJALIZACIJA_PUTANJA").toString());
+        File folderSerijalizacije = new File(Iznajmljivanje.outPathProperties.get("SERIJALIZACIJA_PUTANJA").toString());
         File serijalizovaniFajlovi[] = folderSerijalizacije.listFiles();
         if(serijalizovaniFajlovi != null) {
             for(File fajl : serijalizovaniFajlovi) {

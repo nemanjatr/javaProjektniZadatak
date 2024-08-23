@@ -1,37 +1,51 @@
 package org.unibl.etf.simulacija;
 
 import org.unibl.etf.iznajmljivanje.EMobilityCompany;
-import org.unibl.etf.iznajmljivanje.Iznajmljivanje;
 import org.unibl.etf.mapa.Mapa;
 
 import javax.swing.*;
 
 
+/**
+ * Simulation class is the class that contains main method, and from which
+ * the program is being executed.
+ *
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
+ */
 public class Simulacija {
 
 
+    /**
+     * A shared custom GUI object for displaying the simulation results.
+     * This static variable is initialized in the main method, an is being
+     * used to display some relevant reports and simulation regarding
+     * E-Mobility company.
+     */
     public static GrafickiPrikaz grafickiPrikaz;
 
+
+    /**
+     * Main method in its standard form. Used for initialization of
+     * components needed by the simulation, and then starting the simulation
+     * by calling methods from EMobilityCompany class.
+     * @param args Command line parameters (not used in the simulation)
+     */
     public static void main(String[] args) {
 
-
-//
-//        for(Iznajmljivanje i : eMobilityCompany.izvrsenaIznajmljivanja) {
-//            System.out.println(i);
-//        }
-//
-//        //eMobilityCompany.prikazSumarnogIzvjestaja();
-//        eMobilityCompany.prikazDnevnihIzvjestaja();
-
+        /* Instantiation of EMobilityCompany object, that is the essence of
+         * the program and controls the simulation by calling some of his
+         * methods
+         */
         EMobilityCompany eMobilityCompany = EMobilityCompany.getInstanca();
+
+        /* Mapa object is needed to be initialized before the simulation start
+         * and that is being done in its contstructor.
+         */
         Mapa mapa = new Mapa();
 
-//        eMobilityCompany.ucitajPrevoznaSredstvaIzFajla();
-//        eMobilityCompany.ucitajIznajmljivanjaIzFajla();
-//        //eMobilityCompany.getPrevoznaSredstva().forEach((id, ps) -> System.out.println(id));
-//        eMobilityCompany.getIznajmljivanja().forEach(i -> System.out.println(i.korisnik));
-
-
+        /* Initialization of static field grafickiPrikaz using Swing API */
         SwingUtilities.invokeLater(() -> {
             grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(),
                     eMobilityCompany.getIzvrsenaIznajmljivanja(),
@@ -41,16 +55,10 @@ public class Simulacija {
             grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         });
 
+        /* Calling the relevant methods, they do all the work */
         eMobilityCompany.obaviIznajmljivanja();
         eMobilityCompany.pronadjiVozilaSaNajvecimPrihodom();
         eMobilityCompany.deserijalizujVozila();
-
-        for(Iznajmljivanje i : eMobilityCompany.getIzvrsenaIznajmljivanja()) {
-            System.out.println("Prihod " + i.getPrevoznoSredstvo().getJedinstveniIdentifikator()
-                    + ": " + i.getRacunZaPlacanje().getUkupnoZaPlacanje());
-        }
-
-
 
     }
 }

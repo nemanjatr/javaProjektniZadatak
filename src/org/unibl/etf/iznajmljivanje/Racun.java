@@ -1,20 +1,65 @@
 package org.unibl.etf.iznajmljivanje;
 
+
+/**
+ * Class Racun represents receipt of the rental.
+ * It has several fields that are calculated on different way depending
+ * of the rental characteristics
+ */
 public class Racun {
+
+    /**
+     * Basic price of the rental based on the type of the vehicle (value in
+     * parametri.properties file) and the duration of the rental.
+     */
     private double osnovnaCijena;
+
+    /**
+     * The amount of the Racun object, based on multiple of osnovnaCijena
+     * and distance between starting and end location of the rental.
+     */
     private double iznos;
+
+    /**
+     * Total sum of the rental that is calculated by extracting value of
+     * iznosPopusta and iznosPromocije from iznos field.
+     */
     private double ukupnoZaPlacanje;
+
+    /**
+     * Value of the discount that is calculated with
+     * multiplication of iznos and discount percentage
+     * defined in parametri.properties file.
+    * Every 10th iznajmljivanje gets discount.
+     */
     private double iznosPopusta;
+
+    /**
+     * Value of the promotion that is calculated with
+     * multiplication of iznos and discount percentage
+     * defined in parametri.properties file.
+     */
     private double iznosPromocije;
 
+    /**
+     * Constructor without parameters.
+     */
     public Racun(){
 
     }
 
+    /**
+     * Constructor that sets base price and total sum
+     * @param osnovnaCijena Base price.
+     * @param ukupnoZaPlacanje Total sum.
+     */
     public Racun(int osnovnaCijena, int ukupnoZaPlacanje){
         this.osnovnaCijena = osnovnaCijena;
         this.ukupnoZaPlacanje = ukupnoZaPlacanje;
     }
+
+
+    /* Getters */
 
     public double getOsnovnaCijena() {
         return osnovnaCijena;
@@ -57,6 +102,10 @@ public class Racun {
     }
 
 
+    /**
+     * Redefitinion of toString()
+     * @return String representation of object.
+     */
     @Override
     public String toString() {
         return "Racun: " + "\n\tosnovna cijena: " + osnovnaCijena + ", iznos: " + iznos + " ukupno za placanje: " + ukupnoZaPlacanje;
