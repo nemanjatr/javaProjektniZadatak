@@ -507,7 +507,7 @@ public class Iznajmljivanje extends Thread {
             /* Hold the vehicle on this position for calculated time */
             try {
                 //Thread.sleep((int)(trajanjeZadrzavanjaNaPoljuSekunde * 100)); // radi brzeg izvrsavanja
-                Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 1000));
+                Thread.sleep((int) (trajanjeZadrzavanjaNaPoljuSekunde * 100));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

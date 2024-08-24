@@ -1,6 +1,7 @@
 package org.unibl.etf.simulacija;
 
 import org.unibl.etf.iznajmljivanje.EMobilityCompany;
+import org.unibl.etf.izuzeci.PogresniUlazniPodaciException;
 import org.unibl.etf.mapa.Mapa;
 
 import javax.swing.*;
@@ -45,20 +46,33 @@ public class Simulacija {
          */
         Mapa mapa = new Mapa();
 
-        /* Initialization of static field grafickiPrikaz using Swing API */
-        SwingUtilities.invokeLater(() -> {
-            grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(),
-                    eMobilityCompany.getIzvrsenaIznajmljivanja(),
-                    eMobilityCompany.getIznajmljivanjaSaKvarom(),
-                    eMobilityCompany.getVozilaSaNajvecimPrihodom());
-            grafickiPrikaz.setVisible(true);
-            grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
-        });
-
         /* Calling the relevant methods, they do all the work */
-        eMobilityCompany.obaviIznajmljivanja();
-        eMobilityCompany.pronadjiVozilaSaNajvecimPrihodom();
-        eMobilityCompany.deserijalizujVozila();
+        try {
+
+            /* Initialization of static field grafickiPrikaz using Swing API */
+            SwingUtilities.invokeLater(() -> {
+                grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(),
+                        eMobilityCompany.getIzvrsenaIznajmljivanja(),
+                        eMobilityCompany.getIznajmljivanjaSaKvarom(),
+                        eMobilityCompany.getVozilaSaNajvecimPrihodom());
+                grafickiPrikaz.setVisible(true);
+                grafickiPrikaz.setExtendedState(grafickiPrikaz.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+            });
+
+            eMobilityCompany.obaviIznajmljivanja();
+            eMobilityCompany.pronadjiVozilaSaNajvecimPrihodom();
+            eMobilityCompany.deserijalizujVozila();
+
+
+
+        } catch (PogresniUlazniPodaciException e) {
+            System.out.println("Program se prekida zbog neispravnih ulaznih podataka!");
+        }
+
+
+
+
+
 
     }
 }

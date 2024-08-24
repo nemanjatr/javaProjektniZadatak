@@ -69,9 +69,16 @@ public class EMobilityCompany {
         return vozilaSaNajvecimPrihodom;
     }
 
-    public void ucitajPrevoznaSredstvaIzFajla() {
+    public void ucitajPrevoznaSredstvaIzFajla() throws PogresniUlazniPodaciException{
 
-        try(BufferedReader citacVozila = new BufferedReader(new FileReader(Iznajmljivanje.inputPathProperties.get("PREVOZNA_SREDSTVA").toString()))) {
+        File fajlPutanjaPrevoznaSredstva = new File(Iznajmljivanje.inputPathProperties.get("PREVOZNA_SREDSTVA").toString());
+        if(!fajlPutanjaPrevoznaSredstva.exists()) {
+            throw new PogresniUlazniPodaciException("Fajl sa prevoznim sredstvima ne postoji!");
+        }
+
+        try(BufferedReader citacVozila = new BufferedReader(new FileReader(fajlPutanjaPrevoznaSredstva))) {
+
+
 
             String linijaFajla;
             String regex = "^([A-Za-z0-9]+)," +            // ID
@@ -131,9 +138,12 @@ public class EMobilityCompany {
     }
 
 
-    public void ucitajIznajmljivanjaIzFajla() {
+    public void ucitajIznajmljivanjaIzFajla() throws PogresniUlazniPodaciException{
 
         File fajlPutanjaZaIznajmljivanja = new File(Iznajmljivanje.inputPathProperties.get("IZNAJMLJIVANJA").toString());
+        if(!fajlPutanjaZaIznajmljivanja.exists()) {
+            throw new PogresniUlazniPodaciException("Ulazni fajl sa iznajmljivanjima ne postoji");
+        }
         try (BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja))) {
 
             String linijaFajla;
@@ -191,9 +201,10 @@ public class EMobilityCompany {
         }
     }
 
-    public void obaviIznajmljivanja() {
+    public void obaviIznajmljivanja() throws PogresniUlazniPodaciException {
         this.ucitajPrevoznaSredstvaIzFajla();
         this.ucitajIznajmljivanjaIzFajla();
+
         String vozackaDozvola = "";
         String identifikacioniDokument = "";
 
@@ -253,7 +264,7 @@ public class EMobilityCompany {
             }
 
             try {
-                Thread.sleep(5000);   // treba biti 5000
+                Thread.sleep(100);   // treba biti 5000
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
