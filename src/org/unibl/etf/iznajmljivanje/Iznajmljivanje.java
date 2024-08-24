@@ -42,6 +42,10 @@ public class Iznajmljivanje extends Thread {
     private static final String EXCEPTION_PORUKA = "Greska pri ucitavanju ulaznih podataka iz fajla! Neocekivan datum iznajmljivanja!";
     private static final String RACUNANJE_CIJENE_PORUKA = "Pogresan jedinstveni identifikator vozila u podacima za iznajmljivanje";
     private static final String RACUNANJE_IZNOSA_PORUKA = "Greska u vrijednosti tarife naplacivanja. Ne odgovara tarifi niti za uzi dio grada niti za siri!";
+    private static final String PARAMETRI_PROPERTIES = "Greska sa Properties fajlom parametri.properties";
+    private static final String IZLAZNI_PROPERTIES = "Greska sa Properties fajlom outPath.properties!";
+    private static final String ULAZNI_PROPERTIES = "Greska sa Properties fajlom inputPath.properties!";
+
 
     /**
      * Static properties objects, used for getting some parameters of the program
@@ -116,22 +120,39 @@ public class Iznajmljivanje extends Thread {
      * and also the same thing for serialization folder.
      */
     static {
+
+        File fajlParametri = new File("parametri.properties");
+        if(!fajlParametri.exists()) {
+            System.out.println(PARAMETRI_PROPERTIES);
+            System.exit(1);
+        }
         simProperties = new Properties();
         try {
-            simProperties.load(new FileInputStream("parametri.properties"));
+            simProperties.load(new FileInputStream(fajlParametri));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        File fajlIzlaznePutanje = new File("outPath.properties");
+        if(!fajlIzlaznePutanje.exists()) {
+            System.out.println(IZLAZNI_PROPERTIES);
+            System.exit(1);
+        }
         outPathProperties = new Properties();
         try {
-            outPathProperties.load(new FileInputStream("outPath.properties"));
+            outPathProperties.load(new FileInputStream(fajlIzlaznePutanje));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        File fajlUlaznePutanje = new File("inputPath.properties");
+        if(!fajlUlaznePutanje.exists()) {
+            System.out.println(ULAZNI_PROPERTIES);
+            System.exit(1);
+        }
         inputPathProperties = new Properties();
         try {
-            inputPathProperties.load(new FileInputStream("inputPath.properties"));
+            inputPathProperties.load(new FileInputStream(fajlUlaznePutanje));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
