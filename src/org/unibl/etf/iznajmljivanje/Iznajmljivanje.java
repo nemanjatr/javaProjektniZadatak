@@ -46,6 +46,13 @@ public class Iznajmljivanje extends Thread {
     private static final String IZLAZNI_PROPERTIES = "Greska sa Properties fajlom outPath.properties!";
     private static final String ULAZNI_PROPERTIES = "Greska sa Properties fajlom inputPath.properties!";
 
+    /**
+     * String constants for comparing using equals method.
+     */
+    private static final String DA = "da";
+    private static final String UZI = "uzi";
+    private static final String SIRI = "siri";
+
 
     /**
      * Static properties objects, used for getting some parameters of the program
@@ -212,8 +219,8 @@ public class Iznajmljivanje extends Thread {
         }
 
         this.trajanjeVoznjeSekunde = Integer.parseInt(trajanjeVoznjeSekunde);
-        this.desioSeKvar = desioSeKvar.equalsIgnoreCase("da");
-        this.imaPromociju = imaPromociju.equalsIgnoreCase("da");
+        this.desioSeKvar = DA.equalsIgnoreCase(desioSeKvar);
+        this.imaPromociju = DA.equalsIgnoreCase(imaPromociju);
     }
 
     /* Getters of the needed field */
@@ -296,9 +303,9 @@ public class Iznajmljivanje extends Thread {
         double osnovnaCijena = racunZaPlacanje.getOsnovnaCijena();
 
         try {
-            if("uzi".equals(tarifaNaplacivanja)) {
+            if(UZI.equals(tarifaNaplacivanja)) {
                 racunZaPlacanje.setIznos(Double.parseDouble(simProperties.get("DISTANCE_NARROW").toString()) * osnovnaCijena);
-            } else if("siri".equals(tarifaNaplacivanja)) {
+            } else if(SIRI.equals(tarifaNaplacivanja)) {
                 racunZaPlacanje.setIznos(Double.parseDouble(simProperties.get("DISTANCE_WIDE").toString()) * osnovnaCijena);
             } else {
                 System.out.println(RACUNANJE_IZNOSA_PORUKA);

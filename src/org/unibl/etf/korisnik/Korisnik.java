@@ -98,8 +98,7 @@ public class Korisnik {
      */
     @Override
     public String toString() {
-        String stringZaIspis = "";
-        String drzavljanstvo = this.drzavljanstvo.equals(Drzavljanstvo.STRANO) ? " strani drzavljanin" : " domaci drzavljanin";
+        String drzavljanstvo =Drzavljanstvo.STRANO.equals(this.drzavljanstvo) ? " strani drzavljanin" : " domaci drzavljanin";
         String idDokument = this.dokument.toString();
         String vozackaDozvola = (brojVozackeDozvole != null) ? " vozacka dozvola broj: " + brojVozackeDozvole : " nema vozacku dozvolu";
 
