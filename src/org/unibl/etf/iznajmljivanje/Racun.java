@@ -44,6 +44,9 @@ public class Racun {
      */
     private double iznosPromocije;
 
+
+    private String tarifaNaplacivanje;
+
     /**
      * Constructor without parameters.
      */
@@ -102,6 +105,14 @@ public class Racun {
 
     public void setIznosPromocije(double iznosPromocije) {
         this.iznosPromocije = iznosPromocije;
+    }
+
+    public void setTarifaNaplacivanje(String tarifaNaplacivanje) {
+        this.tarifaNaplacivanje = tarifaNaplacivanje;
+    }
+
+    public String getTarifaNaplacivanja() {
+        return tarifaNaplacivanje;
     }
 
 

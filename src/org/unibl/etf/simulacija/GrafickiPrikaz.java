@@ -438,7 +438,8 @@ public class GrafickiPrikaz extends JFrame {
                 double dnevniPrihod = 0.0;
                 double dnevniPopust = 0.0;
                 double dnevnePromocije = 0.0;
-                double dnevniIznosSvihVoznji = 0.0;
+                double dnevniIznosUziDioGrada = 0.0;
+                double dnevniIznosSiriDioGrada = 0.0;
                 double dnevniIznosOdrzavanja = 0.0;
                 double dnevniIznosPopravkeKvarova = 0.0;
 
@@ -447,7 +448,11 @@ public class GrafickiPrikaz extends JFrame {
                         dnevniPrihod += i.getRacunZaPlacanje().getUkupnoZaPlacanje();
                         dnevniPopust += i.getRacunZaPlacanje().getIznosPopusta();
                         dnevnePromocije += i.getRacunZaPlacanje().getIznosPromocije();
-                        dnevniIznosSvihVoznji += i.getRacunZaPlacanje().getIznos();
+                        if(Iznajmljivanje.UZI.equals(i.getRacunZaPlacanje().getTarifaNaplacivanja())) {
+                            dnevniIznosUziDioGrada += i.getRacunZaPlacanje().getIznos();
+                        } else if(Iznajmljivanje.SIRI.equals(i.getRacunZaPlacanje().getTarifaNaplacivanja())) {
+                            dnevniIznosSiriDioGrada += i.getRacunZaPlacanje().getIznos();
+                        }
                         if(i.isDesioSeKvar()) {
                             if (i.getPrevoznoSredstvo() instanceof ElektricniAutomobil) {
                                 dnevniIznosPopravkeKvarova += 0.07 * i.getPrevoznoSredstvo().getCijenaNabavke();
@@ -463,17 +468,17 @@ public class GrafickiPrikaz extends JFrame {
                     }
                 }
 
-                String[] koloneDnevnogIzvjestaja = {"Prihod", "Popust", "Promocije", "Iznos", "Odrzavanje", "Kvarovi"};
+                String[] koloneDnevnogIzvjestaja = {"Prihod", "Popust", "Promocije", "Iznos uzi dio grada", "Iznos siri dio grada", "Odrzavanje", "Kvarovi"};
                 String[][] podaciDnevnogIzvjestaja = {
                         {String.format("%.2f", dnevniPrihod), String.format("%.2f", dnevniPopust), String.format("%.2f", dnevnePromocije),
-                                String.format("%.2f", dnevniIznosSvihVoznji), String.format("%.2f", dnevniIznosOdrzavanja),
-                                String.format("%.2f", dnevniIznosPopravkeKvarova)}
+                                String.format("%.2f", dnevniIznosUziDioGrada), String.format("%.2f", dnevniIznosSiriDioGrada),
+                                String.format("%.2f", dnevniIznosOdrzavanja), String.format("%.2f", dnevniIznosPopravkeKvarova)}
                 };
 
                 /* Create the JTable object */
                 DefaultTableModel modelTabeleDnevnogIzvjestaja = new DefaultTableModel(podaciDnevnogIzvjestaja, koloneDnevnogIzvjestaja);
                 JTable tabelaDnevnogIzvjestaja = new JTable(modelTabeleDnevnogIzvjestaja);
-                tabelaDnevnogIzvjestaja.setBounds(30, 40, 200, 100);
+                tabelaDnevnogIzvjestaja.setBounds(30, 40, 200, 200);
                 JScrollPane skrolDnevniIzvjestaj = new JScrollPane(tabelaDnevnogIzvjestaja);
                 TitledBorder nazivTabele = BorderFactory.createTitledBorder("Dnevni Izvjestaj " + listaPoDatumu.getFirst().getDatum());
                 skrolDnevniIzvjestaj.setBorder(nazivTabele);
@@ -487,7 +492,8 @@ public class GrafickiPrikaz extends JFrame {
             double ukupanPrihod = 0.0;
             double ukupanPopust = 0.0;
             double ukupnoPromocije = 0.0;
-            double ukupanIznosSvihVoznji = 0.0;
+            double ukupanIznosUziDioGrada = 0.0;
+            double ukupanIznosSiriDioGrada = 0.0;
             double ukupanIznosOdrzavanja = 0.0;
             double ukupanIznosPopravkeKvarova = 0.0;
             double ukupniTroskoviKompanije = 0.0;
@@ -500,7 +506,13 @@ public class GrafickiPrikaz extends JFrame {
                     ukupanPrihod += i.getRacunZaPlacanje().getUkupnoZaPlacanje();
                     ukupanPopust += i.getRacunZaPlacanje().getIznosPopusta();
                     ukupnoPromocije += i.getRacunZaPlacanje().getIznosPromocije();
-                    ukupanIznosSvihVoznji += i.getRacunZaPlacanje().getIznos();
+                    if(Iznajmljivanje.UZI.equals(i.getRacunZaPlacanje().getTarifaNaplacivanja())) {
+                        ukupanIznosUziDioGrada += i.getRacunZaPlacanje().getIznos();
+                    } else if(Iznajmljivanje.SIRI.equals(i.getRacunZaPlacanje().getTarifaNaplacivanja())) {
+                        ukupanIznosSiriDioGrada += i.getRacunZaPlacanje().getIznos();
+                    }
+
+                    //ukupanIznosSvihVoznji += i.getRacunZaPlacanje().getIznos();
                     if (i.isDesioSeKvar()) {
                         if (i.getPrevoznoSredstvo() instanceof ElektricniAutomobil) {
                             ukupanIznosPopravkeKvarova += 0.07 * i.getPrevoznoSredstvo().getCijenaNabavke();
@@ -529,7 +541,8 @@ public class GrafickiPrikaz extends JFrame {
                     {"Ukupan prihod", String.format("%.2f", ukupanPrihod)},
                     {"Ukupan popust", String.format("%.2f", ukupanPopust)},
                     {"Ukupno promocije", String.format("%.2f", ukupnoPromocije)},
-                    {"Ukupan iznos", String.format("%.2f", ukupanIznosSvihVoznji)},
+                    {"Ukupan iznos uzi dio grada", String.format("%.2f", ukupanIznosUziDioGrada)},
+                    {"Ukupan iznos siri dio grada", String.format("%.2f", ukupanIznosSiriDioGrada)},
                     {"Ukupno odrzavanje", String.format("%.2f", ukupanIznosOdrzavanja)},
                     {"Ukupno kvarovi", String.format("%.2f", ukupanIznosPopravkeKvarova)},
                     {"Ukupno troskovi", String.format("%.2f", ukupniTroskoviKompanije)},
@@ -548,7 +561,7 @@ public class GrafickiPrikaz extends JFrame {
 
             /* Add everything to the frame */
             prozorRezultataPoslovanja.add(panelZaIzvjestaj);
-            prozorRezultataPoslovanja.setSize(600, 800);
+            prozorRezultataPoslovanja.setSize(650, 800);
             prozorRezultataPoslovanja.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             prozorRezultataPoslovanja.setVisible(true);
 

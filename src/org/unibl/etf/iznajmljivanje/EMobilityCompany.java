@@ -250,7 +250,7 @@ public class EMobilityCompany {
                     "(ne|da)$";
             Pattern pattern = Pattern.compile(regex);
 
-            linijaFajla = citacIznajmljivanja.readLine();   /* Read first line outside of the loop to remove header */
+            linijaFajla = citacIznajmljivanja.readLine();   /* Read first line outside the loop to remove header */
             while ((linijaFajla = citacIznajmljivanja.readLine()) != null) {
 
                 try {
@@ -310,7 +310,7 @@ public class EMobilityCompany {
         this.ucitajPrevoznaSredstvaIzFajla();
         this.ucitajIznajmljivanjaIzFajla();
 
-        /* Strings to save drivers license and id document numbers needed to be delivered to the company */
+        /* Strings to save driver's license and id document numbers needed to be delivered to the company */
         String vozackaDozvola = "";
         String identifikacioniDokument = "";
 
@@ -496,7 +496,7 @@ public class EMobilityCompany {
         /* Serialization of these three vehicles from each type */
         for(PrevoznoSredstvo ps : vozilaSaNajvecimPrihodom.keySet()) {
             try(ObjectOutputStream serijalizacija = new ObjectOutputStream(new FileOutputStream
-                    (Iznajmljivanje.outPathProperties.get("SERIJALIZACIJA_PUTANJA").toString() + ps.getJedinstveniIdentifikator() + ".ser"))){
+                    (Iznajmljivanje.folderSerijalizacije + File.separator + ps.getJedinstveniIdentifikator() + ".ser"))){
 
                 serijalizacija.writeObject(ps);
 

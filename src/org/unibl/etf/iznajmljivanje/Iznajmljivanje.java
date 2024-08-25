@@ -50,8 +50,8 @@ public class Iznajmljivanje extends Thread {
      * String constants for comparing using equals method.
      */
     private static final String DA = "da";
-    private static final String UZI = "uzi";
-    private static final String SIRI = "siri";
+    public static final String UZI = "uzi";
+    public static final String SIRI = "siri";
 
 
     /**
@@ -120,8 +120,20 @@ public class Iznajmljivanje extends Thread {
     private static final Object lock = new Object();
     private static final Object lockPutanjaRacuna = new Object();
 
+    /**
+     * Static File field representing directory where all files corresponding
+     * each Racun object are stored.
+     */
+    public static File folderRacuna;
 
     /**
+     * Static File field representing directory where all files corresponding to
+     * Iznajmljivanje objects serialization are stored.
+     */
+    public static File folderSerijalizacije;
+
+
+    /*
      * Static initialization block used to initialize properties objects,
      * and to create and(or) clear folder in which Racun objects will be stored
      * and also the same thing for serialization folder.
@@ -165,14 +177,14 @@ public class Iznajmljivanje extends Thread {
         }
 
 
-        File folderRacuna = new File(outPathProperties.get("RACUNI_PUTANJA").toString());
+        folderRacuna = new File(outPathProperties.get("RACUNI_PUTANJA").toString());
         if(!folderRacuna.exists()) {
             folderRacuna.mkdir();
         } else {
             obrisiFajloveUnutarDirektorijuma(folderRacuna);
         }
 
-        File folderSerijalizacije = new File(outPathProperties.get("SERIJALIZACIJA_PUTANJA").toString());
+        folderSerijalizacije = new File(outPathProperties.get("SERIJALIZACIJA_PUTANJA").toString());
         if(!folderSerijalizacije.exists()) {
             folderSerijalizacije.mkdir();
         } else {
@@ -285,9 +297,9 @@ public class Iznajmljivanje extends Thread {
      */
     private void racunanjeTarifeNaplacivanja(){
         if(pocetnaLokacija.unutarUzegDijelaGrada() && krajnjaLokacija.unutarUzegDijelaGrada()) {
-            tarifaNaplacivanja = "uzi";
+            this.racunZaPlacanje.setTarifaNaplacivanje(UZI);
         } else {
-            tarifaNaplacivanja = "siri";
+            this.racunZaPlacanje.setTarifaNaplacivanje(SIRI);
         }
     }
 
@@ -303,9 +315,9 @@ public class Iznajmljivanje extends Thread {
         double osnovnaCijena = racunZaPlacanje.getOsnovnaCijena();
 
         try {
-            if(UZI.equals(tarifaNaplacivanja)) {
+            if(UZI.equals(this.racunZaPlacanje.getTarifaNaplacivanja())) {
                 racunZaPlacanje.setIznos(Double.parseDouble(simProperties.get("DISTANCE_NARROW").toString()) * osnovnaCijena);
-            } else if(SIRI.equals(tarifaNaplacivanja)) {
+            } else if(SIRI.equals(this.racunZaPlacanje.getTarifaNaplacivanja())) {
                 racunZaPlacanje.setIznos(Double.parseDouble(simProperties.get("DISTANCE_WIDE").toString()) * osnovnaCijena);
             } else {
                 System.out.println(RACUNANJE_IZNOSA_PORUKA);
@@ -371,7 +383,7 @@ public class Iznajmljivanje extends Thread {
 
         String stringDatumVrijeme = datumVrijeme.toString().replace(":", "_");
         try(PrintWriter pisacFajlaRacuna = new PrintWriter(new BufferedWriter
-                (new FileWriter(outPathProperties.get("RACUNI_PUTANJA") + stringDatumVrijeme + "_" +
+                (new FileWriter(Iznajmljivanje.folderRacuna + File.separator + stringDatumVrijeme + "_" +
                         korisnik.getImeKorisnika() + "_" + prevoznoSredstvo.getJedinstveniIdentifikator() + ".txt")))) {
             pisacFajlaRacuna.println(this);
             pisacFajlaRacuna.println(racunZaPlacanje);

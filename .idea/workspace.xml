@@ -6,29 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="23ea5e2b-c4e9-40d7-9021-01cf72e7bbcb" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.~lock.IznajmljivanjaOdbrana.csv#" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/inputPath.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inputPath.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/serijalizacija/A2.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/serijalizacija/B2.ser" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/serijalizacija/T2.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/outPath.properties" beforeDir="false" afterPath="$PROJECT_DIR$/outPath.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/EMobilityCompany.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/EMobilityCompany.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Iznajmljivanje.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Kvar.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Kvar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Racun.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/iznajmljivanje/Racun.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/izuzeci/PogresniUlazniPodaciException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/izuzeci/PogresniUlazniPodaciException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/izuzeci/PotrosenaBaterijeException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/izuzeci/PotrosenaBaterijeException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/izuzeci/PrevoznoSredstvoNePostojiException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/izuzeci/PrevoznoSredstvoNePostojiException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/korisnik/Drzavljanstvo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/korisnik/Drzavljanstvo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/korisnik/IdentifikacioniDokument.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/korisnik/IdentifikacioniDokument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/korisnik/Korisnik.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/korisnik/Korisnik.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/mapa/Mapa.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/mapa/Mapa.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/mapa/PoljeNaMapi.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/mapa/PoljeNaMapi.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/GrafickiPrikaz.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/GrafickiPrikaz.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/Simulacija.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/simulacija/Simulacija.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniAutomobil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniAutomobil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniBicikl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniBicikl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniTrotinet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/ElektricniTrotinet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/org/unibl/etf/vozila/PrevoznoSredstvo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/unibl/etf/vozila/PrevoznoSredstvo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,19 +40,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Simulacija.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/nemanja/Desktop/javaProjekti/projektniZadatak&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/home/nemanja/Desktop/javaProjekti/projektniZadatak/src/Main.java&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;IntelliLang.Configuration&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Application.Main.executor": "Run",
+    "Application.Simulacija.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/nemanja/Desktop/vanjaPJ2 (copy)",
+    "onboarding.tips.debug.path": "/home/nemanja/Desktop/javaProjekti/projektniZadatak/src/Main.java",
+    "settings.editor.selected.configurable": "IntelliLang.Configuration"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
