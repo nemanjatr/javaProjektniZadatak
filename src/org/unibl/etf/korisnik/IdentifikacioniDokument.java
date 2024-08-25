@@ -4,9 +4,9 @@ package org.unibl.etf.korisnik;
  * Class for ID document of the user. It abstracts any possible
  * user ID document.
  *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
  */
 public class IdentifikacioniDokument {
 

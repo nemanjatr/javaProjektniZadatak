@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
  * Class Kvar that abstracts failure that can happen when rental is being
  * executed.
  *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
  */
 public class Kvar {
 

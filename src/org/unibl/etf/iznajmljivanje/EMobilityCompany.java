@@ -13,6 +13,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Class EMobilityCompany representing the company itself.
+ * It does all the input data handling,renting, scheduling of the rentals,
+ * takes care of the process of (de)serialization, all collections needed for the GUI are also
+ * filled with methods in this class.
+ * The class has a singleton pattern, so it can be instantiated onl once, and that should be done in the
+ * main method.
+ */
 public class EMobilityCompany {
 
     public static final String AUTOMOBIL = "automobil";
@@ -23,82 +31,156 @@ public class EMobilityCompany {
     private static final String VOZILO_VEC_UCITANO = "Prevozno sredstvo vec ucitano ";
     private static final String ULAZNI_PODACI = "Greska pri ucitavanju ulaznih podataka iz fajla! ";
     private static final String ULAZNI_FAJL = "Greska sa ulaznim fajlom ";
-
     private static final String NEMOGUCE_IZNAJMLJIVANJE = "Prevozno sredstvo nije moguce iznajmiti, jer ne postoji";
 
 
-    /* singleton pattern */
-    private static EMobilityCompany instanca;
-    private EMobilityCompany() {
+    /* ****************** Singleton pattern ***************************************** */
 
+    /**
+     * Private static instance of this class as a part of the singleton pattern.
+     */
+    private static EMobilityCompany instanca;
+
+    /**
+     * Private constructor without parameters as a part of the singleton pattern.
+     */
+    private EMobilityCompany() {
     }
 
+    /**
+     * Getter for the instance of this class, as a part of the singleton pattern.
+     *
+     * @return Instance of this class.
+     */
     public static EMobilityCompany getInstanca() {
         if(instanca == null) {
             instanca = new EMobilityCompany();
         }
         return instanca;
     }
-    /*************************************************/
+    /* ****************** Singleton pattern ***************************************** */
 
+
+    /**
+     * HashMap field containing all the valid vehicles imported from the file in this class.
+     * Key is unique id of the vehicle, and Value is the vehicle itself.
+     */
     private HashMap<String, PrevoznoSredstvo> prevoznaSredstva = new HashMap<>();
+
+    /**
+     * List of all rentals in the simulation imported from the file in this class.
+     */
     private ArrayList<Iznajmljivanje> iznajmljivanja = new ArrayList<>();
+
+    /**
+     * List of all the rentals that are successfully executed, i.e. all the rentals with correct
+     * input data, and no collision of any kind.
+     */
     private ArrayList<Iznajmljivanje> izvrsenaIznajmljivanja = new ArrayList<>();
+
+    /**
+     * ArrayList of all the rentals in which failure of the vehicle happened.
+     */
     private ArrayList<Kvar> iznajmljivanjaSaKvarom = new ArrayList<>();
+
+    /**
+     * HashMap of the vehicle with most profit. Something needed for the serialization part.
+     * Key is that vehicle, and Value is Double value containing profit of the vehicle.
+     * It should have only three inputs, one for each category of the vehicles.
+     */
     HashMap<PrevoznoSredstvo, Double> vozilaSaNajvecimPrihodom = new HashMap<>();
 
 
-
+    /**
+     * Getter for HashMap field prevoznoSredstvo.
+     *
+     * @return HashMap field prevoznoSredstvo.
+     */
     public HashMap<String, PrevoznoSredstvo> getPrevoznaSredstva() {
         return prevoznaSredstva;
     }
 
+    /**
+     * Getter for ArrayList iznajmljivanja.
+     *
+     * @return ArrayList field iznajmljivanja.
+     */
     public ArrayList<Iznajmljivanje> getIznajmljivanja() {
         return iznajmljivanja;
     }
 
+    /**
+     * Getter for ArrayList izvrsenaIznajmljivanja.
+     *
+     * @return ArrayList field izvrsenaIznajmljivanja
+     */
     public ArrayList<Iznajmljivanje> getIzvrsenaIznajmljivanja() {
         return izvrsenaIznajmljivanja;
     }
 
+    /**
+     * Getter for ArrayList iznajmljivanjaSaKvarom.
+     *
+     * @return ArrayList field iznajmljivanjaSaKvarom
+     */
     public ArrayList<Kvar> getIznajmljivanjaSaKvarom() {
         return iznajmljivanjaSaKvarom;
     }
 
+
+    /**
+     * Getter for HashMap field vozilaSaNajvecimPrihodom.
+     *
+     * @return HashMap field vozilaSaNajvecimPrihodom.
+     */
     public HashMap<PrevoznoSredstvo, Double> getVozilaSaNajvecimPrihodom() {
         return vozilaSaNajvecimPrihodom;
     }
 
+
+    /**
+     * Method that loads .csv file with all vehicles and its data, and parses data into HashMap
+     * prevoznaSredstva, by saving a newly create PrevoznoSredstvo as a value, and its id as key.
+     * This is done this way, so it can be easily checked whether vehicle with some id is already loaded.
+     * It uses regex to check if input data is correct, and based on input data it creates appropriate
+     * category of vehicle (car, scooter, bicycle).
+     *
+     * @throws PogresniUlazniPodaciException Throws this user data exception if input data is not correct.
+     */
     public void ucitajPrevoznaSredstvaIzFajla() throws PogresniUlazniPodaciException{
 
+        /* Check if path of the file with input data, provided in inputPath.properties file, is correct */
         File fajlPutanjaPrevoznaSredstva = new File(Iznajmljivanje.inputPathProperties.get("PREVOZNA_SREDSTVA").toString());
         if(!fajlPutanjaPrevoznaSredstva.exists()) {
             throw new PogresniUlazniPodaciException("Fajl sa prevoznim sredstvima ne postoji!");
         }
 
+        /* Read file line by line, and using regex check if all wanted data is present and correct */
         try(BufferedReader citacVozila = new BufferedReader(new FileReader(fajlPutanjaPrevoznaSredstva))) {
 
 
 
             String linijaFajla;
-            String regex = "^([A-Za-z0-9]+)," +            // ID
-                    "([A-Za-z]+)," +                // Proizvodjac
-                    "([A-Za-z0-9]+)," +             // Model
+            String regex = "^([A-Za-z0-9]+)," +              // ID
+                    "([A-Za-z]+)," +                         // Proizvodjac
+                    "([A-Za-z0-9]+)," +                      // Model
                     "(\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\.)?," +  // Datum nabavke (optional)
-                    "(\\d+)," +                   // Cijena (mandatory)
-                    "(\\d+)?,?" +                   // Domet (optional)
-                    "(\\d+)?,?" +                   // Max Brzina (optional)
-                    "(.*?)," +                     // Opis (optional)
-                    "([A-Za-z]+)$";                // Vrsta
+                    "(\\d+)," +                              // Cijena (mandatory)
+                    "(\\d+)?,?" +                            // Domet (optional)
+                    "(\\d+)?,?" +                            // Max Brzina (optional)
+                    "(.*?)," +                               // Opis (optional)
+                    "([A-Za-z]+)$";                          // Vrsta
 
             Pattern pattern = Pattern.compile(regex);
 
-            linijaFajla = citacVozila.readLine();
+
+            linijaFajla = citacVozila.readLine();   /* Read first line to eliminate header */
             while((linijaFajla = citacVozila.readLine()) != null) {
                 try {
                     Matcher matcher = pattern.matcher(linijaFajla);
 
                     if(matcher.matches()) {
+
                         String jedinstveniIdenitifikator = matcher.group(1);
                         String proizvodjac = matcher.group(2);
                         String model = matcher.group(3);
@@ -109,7 +191,9 @@ public class EMobilityCompany {
                         String opis = matcher.group(8) != null ? matcher.group(8) : "N/A";
                         String vrsta = matcher.group(9);
 
+                        /* Check if vehicle is already loaded */
                         if(!prevoznaSredstva.containsKey(jedinstveniIdenitifikator)) {
+                            /* Based on vrsta column from .csv file, classify cars and call appropriate constructor */
                             if(AUTOMOBIL.equals(vrsta)){
                                 prevoznaSredstva.put(jedinstveniIdenitifikator, new ElektricniAutomobil(jedinstveniIdenitifikator, cijena,
                                         proizvodjac, model, datumNabavke, opis));
@@ -138,12 +222,21 @@ public class EMobilityCompany {
     }
 
 
+    /**
+     * Method that loads file with all rentals into iznajmljivanja ArrayList. Regex is used the check
+     * input data, and csv file is parsed using this regex.
+     *
+     * @throws PogresniUlazniPodaciException Exception is thrown if input data is incorrect.
+     */
     public void ucitajIznajmljivanjaIzFajla() throws PogresniUlazniPodaciException{
 
+        /* Check if path of the file with input data, provided in inputPath.properties file, is correct */
         File fajlPutanjaZaIznajmljivanja = new File(Iznajmljivanje.inputPathProperties.get("IZNAJMLJIVANJA").toString());
         if(!fajlPutanjaZaIznajmljivanja.exists()) {
             throw new PogresniUlazniPodaciException("Ulazni fajl sa iznajmljivanjima ne postoji");
         }
+
+        /* Read file line by line, and parse the line using regex */
         try (BufferedReader citacIznajmljivanja = new BufferedReader(new FileReader(fajlPutanjaZaIznajmljivanja))) {
 
             String linijaFajla;
@@ -157,12 +250,13 @@ public class EMobilityCompany {
                     "(ne|da)$";
             Pattern pattern = Pattern.compile(regex);
 
-            linijaFajla = citacIznajmljivanja.readLine();
+            linijaFajla = citacIznajmljivanja.readLine();   /* Read first line outside of the loop to remove header */
             while ((linijaFajla = citacIznajmljivanja.readLine()) != null) {
 
                 try {
                     Matcher matcher = pattern.matcher(linijaFajla);
 
+                    /* Check the regex, and parse each column into a string */
                     if (matcher.matches()) {
 
                         String datumVrijeme = matcher.group(1);
@@ -188,7 +282,8 @@ public class EMobilityCompany {
                     System.out.println(POGRESNI_PODACI_EXCEPTION);
                 }
             }
-            // poslije while petlje sortiranje ArrayList-e
+
+            /* After iznajmljivanja list is filled, it can be sorted by the date */
             iznajmljivanja.sort(new Comparator<Iznajmljivanje>() {
                 @Override
                 public int compare(Iznajmljivanje o1, Iznajmljivanje o2) {
@@ -201,23 +296,44 @@ public class EMobilityCompany {
         }
     }
 
+    /**
+     * Method that effectively does the renting. Rental should be done in parallel, in a way that all rental
+     * that have same date and time, should happen simultaneously. That can be done using threads, and thas is possible
+     * becase object Iznajmljivanje is a thread. By grouping all rentals into a HashMap<LocalDateTime, List<Iznajmljivanje>>
+     * we get several lists grouped by date and time. Then we can start() just threads from each list, at one time.
+     *
+     * @throws PogresniUlazniPodaciException Throws user defined exception if input data is not correct.
+     */
     public void obaviIznajmljivanja() throws PogresniUlazniPodaciException {
+
+        /* First load all data from input files */
         this.ucitajPrevoznaSredstvaIzFajla();
         this.ucitajIznajmljivanjaIzFajla();
 
+        /* Strings to save drivers license and id document numbers needed to be delivered to the company */
         String vozackaDozvola = "";
         String identifikacioniDokument = "";
 
+        /* Group all rentals based on a date into a HashMap */
         Map<LocalDateTime, List<Iznajmljivanje>> grupisanoPoDatumVrijeme =
                 iznajmljivanja.stream().collect(Collectors.groupingBy(Iznajmljivanje::getDatumVrijeme));
 
+        /* Sort all lists in a HashMap */
         Map<LocalDateTime, List<Iznajmljivanje>> sortiranaMapa = new TreeMap<>(grupisanoPoDatumVrijeme);
 
+
+        /* Put all list from a HashMap sortiranaMapa into a one ArrayList (listaIznajmljivanjaPoDatumVrijeme)
+         * where each input is another ArrayList<Iznajmljivanje>
+         */
         ArrayList<ArrayList<Iznajmljivanje>> listaIznajmljivanjaPoDatumVrijeme = new ArrayList<>();
         for(List<Iznajmljivanje> grupa : sortiranaMapa.values()) {
             listaIznajmljivanjaPoDatumVrijeme.add(new ArrayList<>(grupa));
         }
 
+
+        /* Go through one sublist, do some checking to disable multiple rentals with same vehicle,
+         * also check if failure happened and then start() al those threads
+         */
         for(ArrayList<Iznajmljivanje> podlista : listaIznajmljivanjaPoDatumVrijeme) {
             System.out.println("Grupa " + podlista.getFirst().getDatumVrijeme());
 
@@ -255,6 +371,7 @@ public class EMobilityCompany {
                 }
             }
 
+            /* Make sure all threads finish before going further */
             try {
                 for(Iznajmljivanje i : podlista) {
                     i.join();
@@ -263,6 +380,7 @@ public class EMobilityCompany {
                 e.printStackTrace();
             }
 
+            /* Take a pause between rentals that happened between two different data-time */
             try {
                 Thread.sleep(100);   // treba biti 5000
             } catch (InterruptedException e) {
@@ -271,27 +389,47 @@ public class EMobilityCompany {
         }
     }
 
+    /**
+     * Method that is searching for vehicle that gain the most profit, where profit is defined
+     * as a total sum of Racun object for some Iznajmljivanje object (and every Iznajmljivanje is
+     * in correlation with just one vehicle). So the method goes through all finished rentals,
+     * and update the value for most gained vehicle.
+     * This procedure is done far all three categories of vehicles.
+     * HashMap<String, Double> vozilaSaNajvecimPrihodom, has three pairs id - profit, and is updated
+     * as new vehicle in some category appears to have bigger profit that the one that is already in the HashMap.
+     */
     public void pronadjiVozilaSaNajvecimPrihodom() {
+
+        /* Strings to save id's of vehicles */
         String idAutomobila = "";
         String idBicikla = "";
         String idTrotineta = "";
 
         double dosadasnjiPrihod = 0.0;
 
+        /* Double values to save profits for each vehicle */
         double najveciPrihodAutomobili = 0.0;
         double najveciPrihodBicikli = 0.0;
         double najveciPrihodTrotineti = 0.0;
 
+        /* HashMap for each category to save vehicles with its profit */
         HashMap<String, Double> prihodiPoAutomobilu = new HashMap<>();
         HashMap<String, Double> prihodiPoBiciklu = new HashMap<>();
         HashMap<String, Double> prihodiPoTrotinetu = new HashMap<>();
 
 
 
+        /* Go through all finished rentals, and fill hashmaps for each vehicle type*/
         for(Iznajmljivanje iznajmljivanje : izvrsenaIznajmljivanja) {
+
             PrevoznoSredstvo ps = iznajmljivanje.getPrevoznoSredstvo();
             double trenutniPrihod = iznajmljivanje.getRacunZaPlacanje().getUkupnoZaPlacanje();
 
+            /* If vehicle is of type ElektricniAutomobil, there are two possible scenarios.
+             * Vehicle is already in the hashmap, then check its previous profit, and add to it this new profit.
+             * Second scenario is that vehicle is not in the hashMap, then add this vehicle with its current profit
+             * into it.
+             */
             if(ps instanceof ElektricniAutomobil) {
                 if(prihodiPoAutomobilu.containsKey(ps.getJedinstveniIdentifikator())) {
                     dosadasnjiPrihod = prihodiPoAutomobilu.get(ps.getJedinstveniIdentifikator());
@@ -300,7 +438,7 @@ public class EMobilityCompany {
                     prihodiPoAutomobilu.put(ps.getJedinstveniIdentifikator(), trenutniPrihod);
                 }
 
-
+            /* Same like for ElektricniAutomobil */
             } else if(ps instanceof  ElektricniBicikl) {
 
                if(prihodiPoBiciklu.containsKey(ps.getJedinstveniIdentifikator())) {
@@ -309,7 +447,7 @@ public class EMobilityCompany {
                 } else {
                     prihodiPoBiciklu.put(ps.getJedinstveniIdentifikator(), trenutniPrihod);
                 }
-
+            /* Again the same */
             } else if(iznajmljivanje.getPrevoznoSredstvo() instanceof ElektricniTrotinet) {
 
                 if(prihodiPoTrotinetu.containsKey(ps.getJedinstveniIdentifikator())) {
@@ -324,6 +462,8 @@ public class EMobilityCompany {
             }
         }
 
+
+        /* Get the biggest value in each of the three hashmaps */
 
         for(Map.Entry<String, Double> entry :  prihodiPoAutomobilu.entrySet()) {
             if(entry.getValue() > najveciPrihodAutomobili) {
@@ -347,15 +487,13 @@ public class EMobilityCompany {
             }
         }
 
-        System.out.println("serijalizacija : " + idAutomobila + " " + najveciPrihodAutomobili + " " +
-                idBicikla + " " + najveciPrihodBicikli + " " +
-                idTrotineta + " " + najveciPrihodTrotineti);
-
-
+        /* Put vehicle of each type into a final HashMap */
         vozilaSaNajvecimPrihodom.put(prevoznaSredstva.get(idAutomobila), najveciPrihodAutomobili);
         vozilaSaNajvecimPrihodom.put(prevoznaSredstva.get(idBicikla), najveciPrihodBicikli);
         vozilaSaNajvecimPrihodom.put(prevoznaSredstva.get(idTrotineta), najveciPrihodTrotineti);
 
+
+        /* Serialization of these three vehicles from each type */
         for(PrevoznoSredstvo ps : vozilaSaNajvecimPrihodom.keySet()) {
             try(ObjectOutputStream serijalizacija = new ObjectOutputStream(new FileOutputStream
                     (Iznajmljivanje.outPathProperties.get("SERIJALIZACIJA_PUTANJA").toString() + ps.getJedinstveniIdentifikator() + ".ser"))){
@@ -368,16 +506,18 @@ public class EMobilityCompany {
         }
     }
 
+
+    /**
+     * Method that does deserialization
+     */
     public void deserijalizujVozila() {
 
-        System.out.println("deserijalizacija");
         File folderSerijalizacije = new File(Iznajmljivanje.outPathProperties.get("SERIJALIZACIJA_PUTANJA").toString());
         File serijalizovaniFajlovi[] = folderSerijalizacije.listFiles();
         if(serijalizovaniFajlovi != null) {
             for(File fajl : serijalizovaniFajlovi) {
                 try(ObjectInputStream deserijalizacija = new ObjectInputStream(new FileInputStream(fajl))) {
                     PrevoznoSredstvo ps = (PrevoznoSredstvo) deserijalizacija.readObject();
-                    System.out.println(ps.getJedinstveniIdentifikator() + vozilaSaNajvecimPrihodom.get(ps));
                 } catch (IOException | ClassNotFoundException e) {
                     System.out.println();
                 }

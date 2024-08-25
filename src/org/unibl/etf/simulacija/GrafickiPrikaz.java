@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
  * side it used for showcasing some statistical parameters and results of the simulation.
  * <p></p>
  * GrafickiPrikaz class uses Swing API hence why it extends JFrame class.
- *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * <p>
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
  */
 public class GrafickiPrikaz extends JFrame {
 
@@ -319,7 +319,6 @@ public class GrafickiPrikaz extends JFrame {
             JTable tabelaBicikala = new JTable(modelTabeleBicikala);
             tabelaBicikala.setBounds(30, 40, 200, 300);
             JScrollPane skrolBicikala = new JScrollPane(tabelaBicikala);
-            //prozorPrevoznihSredstava.add(skrolBicikala, BorderLayout.CENTER);
             TitledBorder nazivTabeleBicikli = BorderFactory.createTitledBorder("Bicikli");
             skrolBicikala.setBorder(nazivTabeleBicikli);
             panelZaTabele.add(skrolBicikala);
@@ -344,7 +343,6 @@ public class GrafickiPrikaz extends JFrame {
             JTable tabelaTrotineta = new JTable(modelTabeleTrotineta);
             tabelaTrotineta.setBounds(30, 40, 200, 300);
             JScrollPane skrolTrotineta = new JScrollPane(tabelaTrotineta);
-            //prozorPrevoznihSredstava.add(skrolBicikala, BorderLayout.CENTER);
             TitledBorder nazivTabeleTrotineti = BorderFactory.createTitledBorder("Trotineti");
             skrolTrotineta.setBorder(nazivTabeleTrotineti);
             panelZaTabele.add(skrolTrotineta);

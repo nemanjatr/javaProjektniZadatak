@@ -49,6 +49,9 @@ public class Simulacija {
         /* Calling the relevant methods, they do all the work */
         try {
 
+//            eMobilityCompany.ucitajPrevoznaSredstvaIzFajla();
+//            eMobilityCompany.getPrevoznaSredstva().forEach((id, ps) -> System.out.println(ps));
+
             /* Initialization of static field grafickiPrikaz using Swing API */
             SwingUtilities.invokeLater(() -> {
                 grafickiPrikaz = new GrafickiPrikaz(eMobilityCompany.getPrevoznaSredstva(),

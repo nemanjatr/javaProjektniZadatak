@@ -4,9 +4,9 @@ package org.unibl.etf.mapa;
  * Class that contains model of Map - a matrix like object which simulates
  * a polygon for vehicles to move.
  *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
  */
 public class Mapa {
 

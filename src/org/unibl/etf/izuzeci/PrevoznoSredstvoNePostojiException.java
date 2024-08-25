@@ -5,9 +5,9 @@ package org.unibl.etf.izuzeci;
  * that is used when executing rent, to check whether vehicle needed for the rent
  * is existing in the company. If not this exception is thrown.
  *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
  */
 public class PrevoznoSredstvoNePostojiException extends  Exception {
 

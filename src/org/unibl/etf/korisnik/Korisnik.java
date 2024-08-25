@@ -6,9 +6,9 @@ import java.util.Random;
  * Class that abstracts user of the EMobility Company services.
  * It has a fields with user's personal information.
  *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 20244
  */
 public class Korisnik {
 

@@ -28,9 +28,9 @@ import java.util.Properties;
  * threads. There the algorithm for moving is implemented, and at the end racun is
  * created for each Iznajmljivanje object.
  *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
  */
 public class Iznajmljivanje extends Thread {
 

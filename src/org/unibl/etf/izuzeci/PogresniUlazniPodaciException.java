@@ -5,9 +5,9 @@ package org.unibl.etf.izuzeci;
  * that is used when data is loaded from the file, and some data are not as
  * expected.
  *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
  */
 public class PogresniUlazniPodaciException extends Exception {
 

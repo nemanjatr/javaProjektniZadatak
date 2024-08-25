@@ -4,7 +4,10 @@ package org.unibl.etf.iznajmljivanje;
 /**
  * Class Racun represents receipt of the rental.
  * It has several fields that are calculated on different way depending
- * of the rental characteristics
+ * on the rental characteristics
+ * @author Nemanja Tripic
+ * @version 1.0
+ * @since August 2024
  */
 public class Racun {
 

@@ -3,10 +3,10 @@ package org.unibl.etf.mapa;
 /**
  * Class used for abstraction of one field on the Map object.
  * The map is a matrix of PoljeNaMapi fields.
- *
- *  * @author Nemanja Tripic
- *  * @version 1.0
- *  * @since August 2024
+ * <p>
+* @author Nemanja Tripic
+* @version 1.0
+* @since August 2024
  */
 public class PoljeNaMapi {
 
