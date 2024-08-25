@@ -575,7 +575,7 @@ public class GrafickiPrikaz extends JFrame {
             JLabel prostorZaIspis = new JLabel(zaIspis.toString(), SwingConstants.CENTER);
 
             prozorSerijalizovanihPodataka.add(prostorZaIspis);
-            prozorSerijalizovanihPodataka.setSize(200, 100);
+            prozorSerijalizovanihPodataka.setSize(500, 100);
             prozorSerijalizovanihPodataka.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             prozorSerijalizovanihPodataka.setVisible(true);
 
